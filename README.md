@@ -16,6 +16,7 @@
 
   1. Kubernetes Praxis API-Objekte 
      * [Das Tool kubectl (Devs/Ops) - mit beispielen (pod starten](kubectl-with-examples.md)
+     * [kubectl example with run]()
      * Arbeiten mit manifests (Devs/Ops)
      * Pods (Devs/Ops)
      * ReplicaSets (Theorie) - (Devs/Ops)
