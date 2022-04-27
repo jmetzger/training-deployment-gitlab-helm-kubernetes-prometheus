@@ -21,9 +21,10 @@
      * Pods (Devs/Ops)
      * [kubectl/manifest/pod](/kubectl-examples/01-pod-nginx.md)
      * ReplicaSets (Theorie) - (Devs/Ops)
-     * 
-     * Services (Devs/Ops)
+     * [kubectl/manifest/replicaset](/kubectl-examples/01a-replicaset-nginx.md)
      * Deployments (Devs/Ops)
+     * [kubectl/manifest/replicaset](/kubectl-examples/03-nginx-deployment.md)
+     * Services (Devs/Ops)
      * DaemonSets (Devs/Ops)
      * IngressController (Devs/Ops) 
 
