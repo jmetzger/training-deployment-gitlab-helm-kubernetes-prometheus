@@ -3,7 +3,7 @@
 ## Walkthrough 
 
 ```
-vi nginx-static.yml 
+# vi nginx-static.yml 
 
 apiVersion: v1
 kind: Pod
