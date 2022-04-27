@@ -80,10 +80,8 @@
      * [Aufbau Allgemein](/kubernetes/architecture.md)
      * [Aufbau mit helm,OpenShift,Rancher(RKE),microk8s](/kubernetes/aufbau-helm-microk8s-kubernetes.md)
      * [Welches System ? (minikube, micro8ks etc.)](welches-system.md)
-     * [Installation - Welche Komponenten from scratch](/kubernetes/installation-components-overview.md)
 
   1. Kubernetes - microk8s (Installation und Management) 
-     * [Installation Ubuntu - snap](microk8s/installation-ubuntu-snap.md)
      * [Patch to next major release - cluster](microk8s/patch-next-major.md)
      * [Remote-Verbindung zu Kubernetes (microk8s) einrichten](microk8s/connect-from-remote.md)
      * [Create a cluster with microk8s](microk8s/cluster.md)
