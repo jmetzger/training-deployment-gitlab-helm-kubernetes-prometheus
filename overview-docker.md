@@ -22,7 +22,7 @@
   o Unverträglichkeiten von Bibliotheken, Tools oder Datenbank können umgangen werden, wenn diese von den Applikationen in unterschiedlichen Versionen benötigt werden.
 ```
 
-# Was sind Container Images 
+## Was sind Container Images 
 
   * Container Image benötigt, um zur Laufzeit Container-Instanzen zu erzeugen 
   * Bei Docker werden Docker Images zu Docker Containern, wenn Sie auf einer Docker Engine als Prozess ausgeführt
@@ -30,9 +30,25 @@
     * Diese wird genutzt, um damit einen Docker Container als Kopie zu erstellen   
 
 
-# Container vs. VM 
+## Container vs. VM 
 
 ```
 VM's virtualisieren Hardware
 Container virtualisieren Betriebssystem 
 ```
+
+## Dockerfile 
+
+ * Textdatei, die Linux - Kommandos enthält
+   * die man auch auf der Kommandozeile ausführen könnte 
+   * Diese erledigen alle Aufgaben, die nötig sind, um ein Image zusammenzustellen
+   * mit docker build wird dieses image erstellt 
+
+## Einfaches Beispiel eines Dockerfiles
+
+FROM nginx:latest
+COPY html /usr/share/nginx/html
+
+## Komplexeres Beispiel eines Dockerfiles 
+
+  * https://github.com/StefanScherer/whoami/blob/main/Dockerfile
