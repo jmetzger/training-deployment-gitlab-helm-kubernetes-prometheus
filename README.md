@@ -71,6 +71,7 @@
   1. Tipps & Tricks 
      * [bash-completion](/kubectl/bash-completion.md) 
      * [kubectl spickzettel](/kubectl/spickzettel.md)
+     * [Alte manifests migrieren](/kubectl/convert-plugin.md)
 
 ## Backlog 
  
