@@ -29,3 +29,12 @@
 ## Wo muss mich strecken als Admin 
 
   * Aufbau von Vertrauen auf Kubernetes (Vertrauen darauf, dass Kubernetes das in meinem Sinne macht)
+
+## Sicherheitsaspekt (Server vs. Kubernetes) 
+
+  * Komplexität und Durchschaubarkeit steigt, weil
+    * kann keine einfachen Firewall - Regeln mehr machen 
+    * Was macht Kubernetes auf ? (Port)
+    * Läuft vielleicht ein Ingress-Objekct, was mein System aufmacht (ungewollt) 
+
+
