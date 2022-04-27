@@ -70,6 +70,10 @@ kubectl run nginx image=nginx
 # Pods anzeigen 
 kubectl get pods 
 kubectl get pod
+
+# Pods in allen namespaces anzeigen 
+kubectl get pods -A 
+
 # Format weitere Information 
 kubectl get pod -o wide 
 # Zeige labels der Pods
