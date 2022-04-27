@@ -45,7 +45,7 @@ kubectl delete -f nginx-replicaset.yml
 
 ```
 
-## Ausgabeformate 
+## Ausgabeformate / Spezielle Informationen
 
 ```
 # Ausgabe kann in verschiedenen Formaten erfolgen 
@@ -56,6 +56,10 @@ kubectl get pods -o json
 # gilt natürluch auch für andere kommandos
 kubectl get deploy -o json 
 kubectl get deploy -o yaml 
+
+# Label anzeigen 
+kubectl get deploy --show-labels 
+
 ```
 
 
