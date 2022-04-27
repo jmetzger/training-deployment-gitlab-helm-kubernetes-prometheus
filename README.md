@@ -1,6 +1,72 @@
 # Kubernetes und Docker Administration und Orchestrierung 
 
-## Agenda 
+## Agenda
+
+  1. Kubernetes Grundlagen 
+     * [Allgemeine Einführung in Container (Dev/Ops)](overview-docker.md)
+     * Warum Kubernetes ? (Devs/Ops)
+     * Die Struktur von Kubernetes mit seinen Komponenten (Devs/Ops) 
+     * Umdenken in der Administration (feste Server vs. Dienste im Cluster) (Ops) 
+
+  1. Kubernetes Kickoff 
+     * Orchestrierung (Warum und wozu ?) (Devs/Ops)
+     * Microservices (Warum ? Wie ?) (Devs/Ops)
+     * Hochverfügbarkeit (Wie funktioniert das ?) (Ops)
+     * Vorstellung Management - Tools zum Aufsetzen eines Cluster (microk8s,kubeadm,Rancher) (Ops) 
+
+  1. Kubernetes Praxis API-Objekte 
+     * Das Tool kubectl (Devs/Ops)
+     * Arbeiten mit manifests (Devs/Ops)
+     * Pods (Devs/Ops)
+     * ReplicaSets (Theorie) - (Devs/Ops)
+     * Services (Devs/Ops)
+     * Deployments (Devs/Ops)
+     * DaemonSets (Devs/Ops)
+     * IngressController (Devs/Ops) 
+
+  1. Kubernetes Praxis Scaling/Rolling Updates/Wartung 
+     * Rolling Updates (Devs/Ops) 
+     * Scaling von Deployments (Devs/Ops) 
+     * Wartung mit drain / uncordon (Ops) 
+     * Ausblick AutoScaling (Ops) 
+
+  1. Kubernetes Storage 
+     * Grundlagen (Dev/Ops)
+     * Objekte PersistantVolume / PersistantVolumeClaim (Dev/Ops) 
+     * Praxis. Beispiel (Dev/Ops) 
+
+  1. Kubernetes Networking 
+     * Pod to Pod
+     * Webbasierte Dienste (Ingress) 
+     * IP per Pod
+     * Inter Pod Communication ClusterDNS 
+
+  1. Kubernetes Paketmanagement (Helm) 
+     * Warum ? (Dev/Ops)
+     * Grundlagen / Aufbau / Verwendung (Dev/Ops)
+     * Praktisches Beispiel (Dev/Ops) 
+
+  1. Kubernetes Rechteverwaltung (RBAC) 
+     * Warum ? (Ops)
+     * Rollen und Rollenzuordnung (Ops)
+     * Service Accounts (Ops)
+     * Praktische Umsetzung anhand eines Beispiels (Ops) 
+
+  1. Kubernetes Monitoring 
+     * Protokollieren mit Elasticsearch und Fluentd (Devs/Ops)
+     * Container Level Monitoring (Devs/Ops)
+     * Prometheus/cAdvisor (Devs/Ops)
+     * InfluxDB (Ops) 
+
+  1. Kubernetes CI/CD (Optional) 
+     * Canary Deployment (Devs/Ops) 
+     * Blue Green Deployment (Devs/Ops) 
+     * A/B Testing (Devs/Ops) 
+
+
+
+
+## Backlog 
 
   1. Docker-Grundlagen 
      * [Übersicht Architektur](architektur.md)
