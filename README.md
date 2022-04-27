@@ -11,7 +11,7 @@
   1. Kubernetes Kickoff 
      * [Orchestrierung (Warum und wozu ?) (Devs/Ops)](orchestrierung.md)
      * [Microservices (Warum ? Wie ?) (Devs/Ops)](microservices.md)
-     * Hochverfügbarkeit (Wie funktioniert das ?) (Ops)
+     * [Hochverfügbarkeit (Wie funktioniert das ?) (Ops)](ha.md)
      * [Vorstellung Management - Tools zum Aufsetzen eines Cluster (microk8s,kubeadm,Rancher) (Ops)](microk8s-kubeadm-rancher.md) 
 
   1. Kubernetes Praxis API-Objekte 
