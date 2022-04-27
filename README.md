@@ -12,7 +12,7 @@
      * Orchestrierung (Warum und wozu ?) (Devs/Ops)
      * Microservices (Warum ? Wie ?) (Devs/Ops)
      * Hochverfügbarkeit (Wie funktioniert das ?) (Ops)
-     * Vorstellung Management - Tools zum Aufsetzen eines Cluster (microk8s,kubeadm,Rancher) (Ops) 
+     * [Vorstellung Management - Tools zum Aufsetzen eines Cluster (microk8s,kubeadm,Rancher) (Ops)](microk8s-kubeadm-rancher.md) 
 
   1. Kubernetes Praxis API-Objekte 
      * [Das Tool kubectl (Devs/Ops) - mit beispielen (pod starten](kubectl-with-examples.md)
