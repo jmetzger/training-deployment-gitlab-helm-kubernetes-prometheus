@@ -66,6 +66,9 @@
      * Blue Green Deployment (Devs/Ops) 
      * A/B Testing (Devs/Ops) 
 
+  1. Tipps & Tricks 
+     * [bash-completion](/kubectl/bash-completion.md) 
+
 ## Backlog 
  
   1. Kubernetes - Überblick
