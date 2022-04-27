@@ -25,6 +25,7 @@
      * Deployments (Devs/Ops)
      * [kubectl/manifest/deployments](/kubectl-examples/03-nginx-deployment.md)
      * Services (Devs/Ops)
+     * [kubectl/manifest/service](/kubectl-examples/03b-service.md)
      * DaemonSets (Devs/Ops)
      * IngressController (Devs/Ops) 
 
