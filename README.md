@@ -68,6 +68,7 @@
 
   1. Tipps & Tricks 
      * [bash-completion](/kubectl/bash-completion.md) 
+     * [kubectl spickzettel](/kubectl/spickzettel.md)
 
 ## Backlog 
  
