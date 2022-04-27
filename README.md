@@ -6,10 +6,10 @@
      * [Allgemeine Einführung in Container (Dev/Ops)](overview-docker.md)
      * [Warum Kubernetes ? (Devs/Ops)](warum-kubernetes.md)
      * [Die Struktur von Kubernetes mit seinen Komponenten (Devs/Ops)](/kubernetes/architecture.md) 
-     * Umdenken in der Administration (feste Server vs. Dienste im Cluster) (Ops)(/kubernetes/admin-change.md) 
+     * [Umdenken in der Administration (feste Server vs. Dienste im Cluster) (Ops)](/kubernetes/admin-change.md) 
 
   1. Kubernetes Kickoff 
-     * Orchestrierung (Warum und wozu ?) (Devs/Ops)
+     * [Orchestrierung (Warum und wozu ?) (Devs/Ops)](orchestrierung.md)
      * Microservices (Warum ? Wie ?) (Devs/Ops)
      * Hochverfügbarkeit (Wie funktioniert das ?) (Ops)
      * [Vorstellung Management - Tools zum Aufsetzen eines Cluster (microk8s,kubeadm,Rancher) (Ops)](microk8s-kubeadm-rancher.md) 
