@@ -12,16 +12,13 @@ spec:
       tier: frontend
   template:
     metadata:
-      annotations:
-        "scheduler.alpha.kubernetes.io/name": poseidon
       name: nginx-replica-set
       labels:
         tier: frontend
-        scheduler: poseidon
     spec:
       containers:
         - name: nginx
-          image: "nginx:1.11.1-alpine"
+          image: "nginx:latest"
           ports:
              - containerPort: 80
              
