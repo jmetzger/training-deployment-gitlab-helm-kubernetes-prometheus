@@ -16,6 +16,14 @@ kubectl explain pod.metadata.name
 
 ```
 
+## namespaces 
+
+```
+kubectl get ns
+kubectl get namespaces 
+
+```
+
 ## Arbeiten mit manifesten 
 
 ```
