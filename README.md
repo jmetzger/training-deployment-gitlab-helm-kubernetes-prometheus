@@ -64,20 +64,10 @@
      * Blue Green Deployment (Devs/Ops) 
      * A/B Testing (Devs/Ops) 
 
-
-
-
 ## Backlog 
-
-  1. Docker-Grundlagen 
-
-     * [Container vs. Virtuelle Maschine](container-vs-vm.md)
-     * [Was ist ein Dockerfile](dockerfile.md) 
-  
+ 
   1. Kubernetes - Überblick
      * [Warum Kubernetes, was macht Kubernetes](warum-kubernetes.md) 
-     * [Aufbau Allgemein](/kubernetes/architecture.md)
-     * [Aufbau mit helm,OpenShift,Rancher(RKE),microk8s](/kubernetes/aufbau-helm-microk8s-kubernetes.md)
      * [Welches System ? (minikube, micro8ks etc.)](welches-system.md)
 
   1. Kubernetes - microk8s (Installation und Management) 
