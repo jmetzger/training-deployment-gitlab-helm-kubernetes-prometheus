@@ -6,7 +6,7 @@
 
 ## Was sind Docker Images 
 
-  * Container Image benötigt, um zur Laufzeit Container-Instanzen zu erzeugen 
+  * Docker Image benötigt, um zur Laufzeit Container-Instanzen zu erzeugen 
   * Bei Docker werden Docker Images zu Docker Containern, wenn Sie auf einer Docker Engine als Prozess ausgeführt
   * Man kann sich ein Docker Image als Kopiervorlage vorstellen.
     * Diese wird genutzt, um damit einen Docker Container als Kopie zu erstellen   
@@ -21,6 +21,7 @@
 - keinen eigenen Kernel 
 - gut zum Ausführen von Anwendungen auf verschiedenen Umgebungen 
 
+## Weil :
 - Container sind entkoppelt
 - Container sind voneinander unabhängig 
 - Können über wohldefinierte Kommunikationskanäle untereinander Informationen austauschen
