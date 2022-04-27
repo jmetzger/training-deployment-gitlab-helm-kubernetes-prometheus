@@ -19,7 +19,9 @@
      * [kubectl example with run](/kubectl/run-with-example.md)
      * Arbeiten mit manifests (Devs/Ops)
      * Pods (Devs/Ops)
+     * [kubectl/manifest/pod](/kubectl-examples/01-pod-nginx.md)
      * ReplicaSets (Theorie) - (Devs/Ops)
+     * 
      * Services (Devs/Ops)
      * Deployments (Devs/Ops)
      * DaemonSets (Devs/Ops)
