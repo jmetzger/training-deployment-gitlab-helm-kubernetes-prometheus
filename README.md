@@ -5,7 +5,7 @@
   1. Kubernetes Grundlagen 
      * [Allgemeine Einführung in Container (Dev/Ops)](overview-docker.md)
      * [Warum Kubernetes ? (Devs/Ops)](warum-kubernetes.md)
-     * Die Struktur von Kubernetes mit seinen Komponenten (Devs/Ops) 
+     * [Die Struktur von Kubernetes mit seinen Komponenten (Devs/Ops)](/kubernetes/architecture.md) 
      * Umdenken in der Administration (feste Server vs. Dienste im Cluster) (Ops) 
 
   1. Kubernetes Kickoff 
