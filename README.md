@@ -15,7 +15,7 @@
      * Vorstellung Management - Tools zum Aufsetzen eines Cluster (microk8s,kubeadm,Rancher) (Ops) 
 
   1. Kubernetes Praxis API-Objekte 
-     * Das Tool kubectl (Devs/Ops)
+     * [Das Tool kubectl (Devs/Ops) - mit beispielen (pod starten](kubectl-with-examples.md)
      * Arbeiten mit manifests (Devs/Ops)
      * Pods (Devs/Ops)
      * ReplicaSets (Theorie) - (Devs/Ops)
