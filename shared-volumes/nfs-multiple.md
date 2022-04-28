@@ -139,7 +139,7 @@ kubectl apply -f 03-deploy.yml
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-nginx
+  name: service-nginx
   labels:
     run: svc-my-nginx
 spec:
