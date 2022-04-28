@@ -1,4 +1,4 @@
-# Volume with NFS
+# Volumes with NFS (Share per Student)
 
 ## Create new server and install nfs-server
 
