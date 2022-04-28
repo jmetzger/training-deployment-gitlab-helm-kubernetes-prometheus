@@ -30,6 +30,7 @@
      * DaemonSets (Devs/Ops)
      * IngressController (Devs/Ops)
      * [Hintergrund Ingress](/kubernetes/ingress.md) 
+     * [Beispiel mit Hostnamen](/kubectl-examples/04-ingress-nginx-with-hostnames.md)
 
   1. Kubernetes Praxis Scaling/Rolling Updates/Wartung 
      * Rolling Updates (Devs/Ops) 
