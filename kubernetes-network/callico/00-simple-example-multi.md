@@ -17,7 +17,8 @@ wget -q nginx -O -
 ```
 # Schritt 2: Policy festlegen, dass kein Ingress-Traffic erlaubt
 # in diesem namespace: policy-demo 
-kubectl create -f - <<EOF
+# mkdir network; cd network 
+# vi 01-policy.yml
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -26,7 +27,14 @@ metadata:
 spec:
   podSelector:
     matchLabels: {}
-EOF
+
+
+
+```
+kubectl apply -f 01-policy.yml 
+```
+
+```
 # lassen einen 2. pod laufen mit dem auf den nginx zugreifen 
 kubectl run --namespace=policy-demo access --rm -ti --image busybox /bin/sh
 ```
