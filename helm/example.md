@@ -3,7 +3,7 @@
 ## Prerequisites 
 
   * kubectl needs to be installed and configured to access cluster
-  * Good: helm works as unprivliged user as well - Good for our setup 
+  * Good: helm works as unprivileged user as well - Good for our setup 
   * install helm on ubuntu (client) as root: snap install --classic helm 
     * this installs helm3
   * Please only use: helm3. No server-side comoponents needed (in cluster) 
@@ -16,6 +16,15 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm search repo bitnami 
 helm repo update
 
+helm install my-mysql bitnami/mysql
+
+
+```
+
+
+## Example 1 - continue - fehlerbehebung 
+
+```
 # Install with persistentStorage disabled - Setting a specific value 
 helm install my-mysql --set primary.persistence.enabled=false bitnami/mysql
 # Alternative if already installed 
