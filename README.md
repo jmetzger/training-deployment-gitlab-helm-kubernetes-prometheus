@@ -49,7 +49,7 @@
   1. Kubernetes Paketmanagement (Helm) 
      * Warum ? (Dev/Ops)
      * Grundlagen / Aufbau / Verwendung (Dev/Ops)
-     * Praktisches Beispiel (Dev/Ops) 
+     * [Praktisches Beispiel bitnami/mysql (Dev/Ops)](/helm/example.md) 
 
   1. Kubernetes Rechteverwaltung (RBAC) 
      * Warum ? (Ops)
