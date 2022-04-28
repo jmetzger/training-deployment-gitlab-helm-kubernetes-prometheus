@@ -10,7 +10,8 @@ microk8s enable ingress
 ## Walkthrough 
 
 ```
-mkdir apple-banana-ingress
+# mkdir apple-banana-ingress
+# cd apple-banana-ingress
 
 # apple.yml 
 # vi apple.yml 
