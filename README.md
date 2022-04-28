@@ -76,6 +76,9 @@
      * [bash-completion](/kubectl/bash-completion.md) 
      * [kubectl spickzettel](/kubectl/spickzettel.md)
      * [Alte manifests migrieren](/kubectl/convert-plugin.md)
+    
+  1. Fragen 
+     * [Q and A](/q-and-a.md)
 
 ## Backlog 
 
