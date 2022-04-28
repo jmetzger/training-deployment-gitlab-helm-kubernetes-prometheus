@@ -113,6 +113,18 @@ kubectl get deployments --namespace=kube-system
 kubectl get deployments -n kube-system 
 ```
 
+## Alle Objekte anzeigen 
+
+```
+# Manchen Objekte werden mit all angezeigt 
+kubectl get all 
+kubectl get all,configmaps 
+
+# Über alle Namespaces hinweg 
+kubectl get all -A 
+
+
+```
 
 
 ## Referenz
