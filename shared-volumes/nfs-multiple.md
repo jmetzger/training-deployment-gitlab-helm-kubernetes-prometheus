@@ -36,8 +36,9 @@ umount /mnt/nfs
 ## Setup PersistentVolume and PersistentVolumeClaim in cluster
 
 ```
-# Important user 
-# vi nfs.yml 
+# mkdir -p nfs; cd nfs
+# vi 01-pv.yml 
+# Important user  
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -61,7 +62,14 @@ spec:
     server: 192.168.56.106
     readOnly: false
   storageClassName: ""
----
+
+```
+
+```
+kubectl apply -f 01-pv.yml 
+```
+
+```
 # now we want to claim space
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -76,6 +84,8 @@ spec:
      requests:
        storage: 1Gi
 ```
+
+
 ```
 kubectl apply -f nfs.yml
 ```
