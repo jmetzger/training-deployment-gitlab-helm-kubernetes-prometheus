@@ -50,7 +50,7 @@
      * Webbasierte Dienste (Ingress) 
      * IP per Pod
      * Inter Pod Communication ClusterDNS 
-     * [Beispiel NetworkPolicies](/kubernetes-network/callico/00-simple-example.md)
+     * [Beispiel NetworkPolicies](/kubernetes-network/callico/00-simple-example-multi.md)
 
   1. Kubernetes Paketmanagement (Helm) 
      * [Warum ? (Dev/Ops)](helm/warum.md)
