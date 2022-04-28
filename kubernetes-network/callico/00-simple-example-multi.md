@@ -47,12 +47,12 @@ wget -q nginx -O -
 
 ```
 # Schritt 3: Zugriff erlauben von pods mit dem Label run=access 
-kubectl create -f - <<EOF
+# 02-allow.yml
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: access-nginx
-  namespace: policy-demo
+  namespace: policy-demo<tln>
 spec:
   podSelector:
     matchLabels:
@@ -62,11 +62,17 @@ spec:
       - podSelector:
           matchLabels:
             run: access
-EOF
+```
 
+
+```
+kubectl apply -f 02-allow.yml 
+```
+
+```
 # lassen einen 2. pod laufen mit dem auf den nginx zugreifen 
 # pod hat durch run -> access automatisch das label run:access zugewiesen 
-kubectl run --namespace=policy-demo access --rm -ti --image busybox /bin/sh
+kubectl run --namespace=policy-demo<tln> access --rm -ti --image busybox /bin/sh
 ```
 
 ```
