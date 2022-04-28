@@ -70,6 +70,7 @@ kubectl apply -f 01-pv.yml
 ```
 
 ```
+# vi 02-pvs.yml 
 # now we want to claim space
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -87,12 +88,12 @@ spec:
 
 
 ```
-kubectl apply -f nfs.yml
+kubectl apply -f 02-pvs.yml
 ```
 
 ```
 # deployment including mount 
-# vi deploy.yml 
+# vi 03-deploy.yml 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -101,18 +102,13 @@ spec:
   selector:
     matchLabels:
       app: nginx
-  replicas: 4 # tells deployment to run 2 pods matching the template
+  replicas: 4 # tells deployment to run 4 pods matching the template
   template:
     metadata:
       labels:
         app: nginx
     spec:
-    
-      volumes:
-      - name: nfsvol
-        persistentVolumeClaim:
-          claimName: pv-nfs-claim
-    
+       
       containers:
       - name: nginx
         image: nginx:latest
@@ -122,10 +118,16 @@ spec:
         volumeMounts:
           - name: nfsvol
             mountPath: "/usr/share/nginx/html"
-     
+
+      volumes:
+      - name: nfsvol
+        persistentVolumeClaim:
+          claimName: pv-nfs-claim-tln1
+
+
 ```
 
 ```
-kubectl apply -f deploy.yml 
+kubectl apply -f 03-deploy.yml 
 
 ```
