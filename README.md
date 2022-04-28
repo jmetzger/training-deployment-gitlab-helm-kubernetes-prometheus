@@ -33,7 +33,7 @@
   1. Kubernetes Praxis Scaling/Rolling Updates/Wartung 
      * Rolling Updates (Devs/Ops) 
      * Scaling von Deployments (Devs/Ops) 
-     * Wartung mit drain / uncordon (Ops) 
+     * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md) 
      * Ausblick AutoScaling (Ops) 
 
   1. Kubernetes Storage 
@@ -56,7 +56,7 @@
      * Warum ? (Ops)
      * Rollen und Rollenzuordnung (Ops)
      * Service Accounts (Ops)
-     * Praktische Umsetzung anhand eines Beispiels (Ops) 
+     * [Praktische Umsetzung anhand eines Beispiels (Ops)](/kubernetes/rbac-create-user.md)
 
   1. Kubernetes Monitoring 
      * Protokollieren mit Elasticsearch und Fluentd (Devs/Ops)
@@ -113,7 +113,7 @@
      * [Shared Volumes with nfs](shared-volumes/nfs.md)
 
   1. Kubernetes - Wartung 
-     * [kubectl drain/uncordon](/kubectl/uncordon-drain.md)
+
 
   1. Kubernetes - Tipps & Tricks 
      * [Assigning Pods to Nodes](/tipps-tricks/pods-2-nodes.md) 
