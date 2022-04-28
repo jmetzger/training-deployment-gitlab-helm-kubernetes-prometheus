@@ -18,4 +18,9 @@ spec:
 
 ## Wo dokumentieren, z.B. aus welchem Repo / git 
 
+```
+Labels can be used to select objects and to find collections of objects that satisfy certain conditions. In contrast, annotations are not used to identify and select objects. 
+```
   * https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+  * https://kubernetes.io/docs/reference/labels-annotations-taints/
+
