@@ -131,3 +131,54 @@ spec:
 kubectl apply -f 03-deploy.yml 
 
 ```
+
+
+```
+# now testing it with a service 
+# cat 04-service.yml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-nginx
+  labels:
+    run: svc-my-nginx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: nginx
+```        
+
+```
+kubectl apply -f 04-service.yml 
+
+# connect to the container and add index.html - data 
+kubectl exec -it deploy/nginx-deployment -- bash 
+# in container
+echo "hello dear friend" > /usr/share/nginx/html/index.html 
+exit 
+
+# now try to connect 
+kubectl get svc 
+
+# connect with ip and port
+curl http://<cluster-ip>:<port> # port -> > 30000
+
+# now destroy deployment 
+kubectl delete -f 03-deploy.yml 
+
+# Try again - no connection 
+curl http://<cluster-ip>:<port> # port -> > 30000
+
+# now start deployment again 
+kubectl apply -f 03-deploy.yml 
+
+# and try connection again  
+curl http://<cluster-ip>:<port> # port -> > 30000
+
+```
+
+
+
