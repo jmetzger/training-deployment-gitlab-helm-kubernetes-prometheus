@@ -22,7 +22,7 @@ helm install my-mysql --set primary.persistence.enabled=false bitnami/mysql
 # helm upgrade my-mysql --set primary.persistence.enabled=false 
 
 # just as notice 
-# helm remove my-mysql 
+# helm uninstall my-mysql 
 
 ```
 
