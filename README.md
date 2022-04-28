@@ -28,7 +28,8 @@
      * Services (Devs/Ops)
      * [kubectl/manifest/service](/kubectl-examples/03b-service.md)
      * DaemonSets (Devs/Ops)
-     * IngressController (Devs/Ops) 
+     * IngressController (Devs/Ops)
+     * [Hintergrund Ingress](/kubernetes/ingress.md) 
 
   1. Kubernetes Praxis Scaling/Rolling Updates/Wartung 
      * Rolling Updates (Devs/Ops) 
