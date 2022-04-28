@@ -26,7 +26,7 @@ spec:
     - name: apple-app
       image: hashicorp/http-echo
       args:
-        - "-text=apple"
+        - "-text=apple-tln12"
 ---
 
 kind: Service
@@ -60,7 +60,7 @@ spec:
     - name: banana-app
       image: hashicorp/http-echo
       args:
-        - "-text=banana"
+        - "-text=banana-tln12"
 
 ---
 
