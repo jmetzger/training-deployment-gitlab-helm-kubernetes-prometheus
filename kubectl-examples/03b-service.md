@@ -4,7 +4,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-nginx
+  name: web-nginx
 spec:
   selector:
     matchLabels:
@@ -16,7 +16,7 @@ spec:
         run: my-nginx
     spec:
       containers:
-      - name: my-nginx
+      - name: cont-nginx
         image: nginx
         ports:
         - containerPort: 80
@@ -24,15 +24,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-nginx
+  name: svc-nginx
   labels:
-    run: my-nginx
+    run: svc-my-nginx
 spec:
+  type: NodePort
   ports:
   - port: 80
     protocol: TCP
   selector:
     run: my-nginx
+        
+        
+
         
         
 ```        
