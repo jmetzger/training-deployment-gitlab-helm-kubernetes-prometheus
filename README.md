@@ -39,7 +39,7 @@
   1. Kubernetes Storage 
      * Grundlagen (Dev/Ops)
      * Objekte PersistantVolume / PersistantVolumeClaim (Dev/Ops) 
-     * Praxis. Beispiel (Dev/Ops) 
+     * [Praxis. Beispiel (Dev/Ops)](/shared-volumes/nfs.md) 
 
   1. Kubernetes Networking 
      * [Überblick](/kubernetes-networks/overview.md) 
@@ -81,7 +81,6 @@
 
   1. Kubernetes - microk8s (Installation und Management) 
      * [Patch to next major release - cluster](microk8s/patch-next-major.md)
-     * [Ingress controller in microk8s aktivieren](microk8s/ingress.md) 
      * [Installation Kuberenetes Dashboard](/microk8s/dashboard.md) 
 
   1. Kubernetes - API - Objekte
