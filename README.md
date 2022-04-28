@@ -60,7 +60,7 @@
      * Warum ? (Ops)
      * Rollen und Rollenzuordnung (Ops)
      * Service Accounts (Ops)
-     * [Praktische Umsetzung anhand eines Beispiels (Ops)](/kubernetes/rbac-create-user.md)
+     * [Praktische Umsetzung anhand eines Beispiels (Ops)](/kubernetes/rbac-create-user-multi.md)
 
   1. Kubernetes Monitoring 
      * Protokollieren mit Elasticsearch und Fluentd (Devs/Ops)
@@ -93,11 +93,7 @@
   
      * [Was sind Deployments](/kubernetes/deployments.md)
      * [Service - Objekt und IP](/kubernetes/service.md)
-     * [Ingress -> Nginx Proxy](/kubernetes/ingress.md)
 
-  1. Kubernetes - RBAC 
-     * [Nutzer einrichten](/kubernetes/rbac-create-user.md) 
- 
   1. Kubernetes - Netzwerk (CNI's) 
      * [Übersicht Netzwerke](/kubernetes-networks/overview.md) 
      * [Callico - nginx example](/kubernetes-network/callico/00-simple-example.md)
