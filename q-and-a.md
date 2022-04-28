@@ -15,3 +15,7 @@ spec:
   # ...
   
 ```
+
+## Wo dokumentieren, z.B. aus welchem Repo / git 
+
+  * https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
