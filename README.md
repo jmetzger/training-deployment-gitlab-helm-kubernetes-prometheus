@@ -52,7 +52,7 @@
      * Inter Pod Communication ClusterDNS 
 
   1. Kubernetes Paketmanagement (Helm) 
-     * Warum ? (Dev/Ops)
+     * [Warum ? (Dev/Ops)](helm/warum.md)
      * Grundlagen / Aufbau / Verwendung (Dev/Ops)
      * [Praktisches Beispiel bitnami/mysql (Dev/Ops)](/helm/example.md) 
 
