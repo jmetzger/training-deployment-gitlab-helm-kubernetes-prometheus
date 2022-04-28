@@ -28,7 +28,7 @@ helm install my-mysql bitnami/mysql
 # Install with persistentStorage disabled - Setting a specific value 
 helm install my-mysql --set primary.persistence.enabled=false bitnami/mysql
 # Alternative if already installed 
-# helm upgrade my-mysql --set primary.persistence.enabled=false 
+# helm upgrade my-mysql --set primary.persistence.enabled=false bitnami/mysql
 
 # just as notice 
 # helm uninstall my-mysql 
