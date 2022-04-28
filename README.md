@@ -42,7 +42,7 @@
   1. Kubernetes Storage 
      * Grundlagen (Dev/Ops)
      * Objekte PersistantVolume / PersistantVolumeClaim (Dev/Ops) 
-     * [Praxis. Beispiel (Dev/Ops)](/shared-volumes/nfs.md) 
+     * [Praxis. Beispiel (Dev/Ops)](/shared-volumes/nfs-multiple.md) 
 
   1. Kubernetes Networking 
      * [Überblick](/kubernetes-networks/overview.md) 
@@ -104,31 +104,16 @@
      * [Callico - client-backend-ui-example](/kubernetes-network/callico/01-example-with-services.md)
    
   1. kubectl 
-     * [Bash completion for kubectl](/kubectl/bash-completion.md)
-     * [kubectl Spickzettel](/kubectl/spickzettel.md)
      * [Tipps&Tricks zu Deploymnent - Rollout](/kubectl/rollout.md) 
      
   1. kubectl - manifest - examples 
-     * [02 Pod nginx mit Port und IP innerhalb des Clusters](/kubectl-examples/02-pod-nginx-exposed.md)
-     * [03b Example with service and nginx](/kubectl-examples/03b-service.md)
-     * [04 Ingress mit einfachem Beispiel](/kubectl-examples/04-ingress-nginx.md)
      * [05 Ingress mit Permanent Redirect](/kubectl-examples/05-ingress-permanent-redirect.md)
 
   1. Kubernetes - Monitoring (microk8s und vanilla) 
      * [metrics-server aktivieren (microk8s und vanilla)](/microk8s/metrics-server.md)
 
-  1. Kubernetes - Shared Volumes 
-     * [Shared Volumes with nfs](shared-volumes/nfs.md)
-
-  1. Kubernetes - Wartung 
-
-
   1. Kubernetes - Tipps & Tricks 
-     * [Assigning Pods to Nodes](/tipps-tricks/pods-2-nodes.md) 
-
-  1. Kubernetes - Documentation 
-     * [Documentation zu microk8s plugins/addons](https://microk8s.io/docs/addons)
-     * [Shared Volumes - Welche gibt es ?](https://kubernetes.io/docs/concepts/storage/volumes/)
+     * [Assigning Pods to Nodes](/tipps-tricks/pods-2-nodes.md)
 
   1. Linux und Docker Tipps & Tricks allgemein 
      * [vim einrückung für yaml-dateien](/vim/vim-yaml.md)
