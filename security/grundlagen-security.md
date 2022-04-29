@@ -63,4 +63,32 @@ spec:
 ```
 
 ```
+# a lot of warnings will come up 
 kubectl apply -f 02-nginx.yml
+```
+
+````
+# Schritt 3:
+# Anpassen der Sicherheitseinstellung (Phase1) im Container 
+
+# vi 02-nginx.yml 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: test-ns<tln>
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+      securityContext:     
+        seccompProfile:    
+          type: RuntimeDefault
+```
+
+```
+kubectl delete -f 02-nginx.yml
+```
