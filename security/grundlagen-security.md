@@ -91,4 +91,6 @@ spec:
 
 ```
 kubectl delete -f 02-nginx.yml
+kubectl apply -f 02_pod.yml
+kubectl -n test-ns<tln> get pods 
 ```
