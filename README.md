@@ -64,6 +64,7 @@
      * [Praktische Umsetzung anhand eines Beispiels (Ops)](/kubernetes/rbac-create-user-multi.md)
 
   1. Kubernetes Monitoring 
+     * [Built-In Monitoring tools - kubectl top pods/node](microk8s/metrics-server.md)
      * Protokollieren mit Elasticsearch und Fluentd (Devs/Ops)
      * [Long Installation step-by-step - Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes)
      * Container Level Monitoring (Devs/Ops)
