@@ -73,6 +73,9 @@
      * [Setting up metrics-server - microk8s](/microk8s/metrics-server.md)
      * Prometheus/cAdvisor (Devs/Ops)
      * InfluxDB (Ops) 
+  
+  1. Kubernetes Security 
+     * [Grundlagen](security/grundlagen-security.md)
 
   1. Kubernetes CI/CD (Optional) 
      * Canary Deployment (Devs/Ops) 
