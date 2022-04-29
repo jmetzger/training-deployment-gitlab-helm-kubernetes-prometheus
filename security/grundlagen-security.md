@@ -1,6 +1,6 @@
 # Grundlagen Security 
 
-## Geschiche 
+## Geschichte 
 
   * Namespaces sind die Grundlage für Container 
   * LXC - Container 
@@ -93,4 +93,34 @@ spec:
 kubectl delete -f 02-nginx.yml
 kubectl apply -f 02_pod.yml
 kubectl -n test-ns<tln> get pods 
+```
+
+```
+# Schritt 4: 
+# Weitere Anpassung runAsNotRoot 
+# vi 02-nginx.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: test-ns12
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+
+```
+
+```
+# pod kann erstellt werden, wird aber nicht gestartet 
+kubectl delete -f 02_pod.yml 
+kubectl apply -f 02_pod.yml 
+kubectl -n test-ns<tln> get pods
+kubectl -n test-ns<tln> describe pods nginx 
 ```
