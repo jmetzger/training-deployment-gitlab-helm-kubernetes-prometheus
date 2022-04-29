@@ -37,7 +37,7 @@
      * Rolling Updates (Devs/Ops) 
      * Scaling von Deployments (Devs/Ops) 
      * [Wartung mit drain / uncordon (Ops)](#wartung-mit-drain--uncordon-ops)
-     * Ausblick AutoScaling (Ops) 
+     * [Ausblick AutoScaling (Ops)](#ausblick-autoscaling-ops)
 
   1. Kubernetes Storage 
      * Grundlagen (Dev/Ops)
@@ -64,13 +64,18 @@
      * [Praktische Umsetzung anhand eines Beispiels (Ops)](#praktische-umsetzung-anhand-eines-beispiels-ops)
 
   1. Kubernetes Monitoring 
-     * Protokollieren mit Elasticsearch und Fluentd (Devs/Ops)
+     * [Ebenen des Loggings](#ebenen-des-loggings)
+     * [Working with kubectl logs](#working-with-kubectl-logs)
+     * [Built-In Monitoring tools - kubectl top pods/nodes](#built-in-monitoring-tools---kubectl-top-podsnodes)
+     * [Protokollieren mit Elasticsearch und Fluentd (Devs/Ops)](#protokollieren-mit-elasticsearch-und-fluentd-devsops)
      * [Long Installation step-by-step - Digitalocean](https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes)
      * Container Level Monitoring (Devs/Ops)
-     * [Working with kubectl logs](#working-with-kubectl-logs)
      * [Setting up metrics-server - microk8s](#setting-up-metrics-server---microk8s)
      * Prometheus/cAdvisor (Devs/Ops)
      * InfluxDB (Ops) 
+  
+  1. Kubernetes Security 
+     * [Grundlagen und Beispiel (Praktisch)](#grundlagen-und-beispiel-praktisch)
 
   1. Kubernetes CI/CD (Optional) 
      * Canary Deployment (Devs/Ops) 
@@ -577,6 +582,18 @@ kubectl get all -A
 
 ```
 
+### Logs
+
+```
+kubectl logs <container>
+kubectl logs <deployment>
+## e.g. 
+## kubectl logs -n namespace8 deploy/nginx
+## with timestamp 
+kubectl logs --timestamp -n namespace8 deploy/nginx
+## continously show output 
+kubectl logs -f <container>
+```
 
 ### Referenz
 
@@ -967,6 +984,33 @@ kubectl rollout restart deploy/webserver
 
 
 ```
+
+### Ausblick AutoScaling (Ops)
+
+
+### Example: 
+
+```
+
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+    name: busybox-1
+spec:
+    scaleTargetRef:
+        kind: Deployment
+        name: busybox-1
+    minReplicas: 3
+    maxReplicas: 4
+    targetCPUUtilizationPercentage: 80
+
+
+```
+
+
+### Reference 
+
+  * https://medium.com/expedia-group-tech/autoscaling-in-kubernetes-why-doesnt-the-horizontal-pod-autoscaler-work-for-me-5f0094694054
 
 ## Kubernetes Storage 
 
@@ -1460,7 +1504,7 @@ kubectl apply -f pods-clusterrole.yml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: rolebinding-ns-default-pods
+  name: rolebinding-ns-default-pods<nr>
   namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -1488,9 +1532,9 @@ kubectl auth can-i get pods -n default --as system:serviceaccount:default:traini
 kubectl config set-context training-ctx --cluster microk8s-cluster --user training<nr> # <nr> durch teilnehmer - nr ersetzen 
 
 ## extract name of the token from here 
-TOKEN_NAME=`kubectl get serviceaccount training<nr> -o jsonpath='{.secrets[0].name}'` # nr durch teilnehmer <nr> ersetzen 
+TOKEN_NAME=`kubectl -n default get serviceaccount training<nr> -o jsonpath='{.secrets[0].name}'` # nr durch teilnehmer <nr> ersetzen 
 
-TOKEN=`kubectl get secret $TOKEN_NAME -o jsonpath='{.data.token}' | base64 --decode`
+TOKEN=`kubectl -n default get secret $TOKEN_NAME -o jsonpath='{.data.token}' | base64 --decode`
 echo $TOKEN
 kubectl config set-credentials training<nr> --token=$TOKEN # <nr> druch teilnehmer - nr ersetzen 
 kubectl config use-context training-ctx
@@ -1516,12 +1560,93 @@ kubectl get pods
 
 ## Kubernetes Monitoring 
 
-### Long Installation step-by-step - Digitalocean
+### Ebenen des Loggings
 
-  * https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes
+  
+  * container-level logging 
+  * node-level logging 
+  * Cluster-Ebene (cluster-wide logging) 
 
 ### Working with kubectl logs
 
+
+### Logs
+
+```
+kubectl logs <container>
+kubectl logs <deployment>
+## e.g. 
+## kubectl logs -n namespace8 deploy/nginx
+## with timestamp 
+kubectl logs --timestamp -n namespace8 deploy/nginx
+## continously show output 
+kubectl logs -f <container>
+```
+
+
+### Built-In Monitoring tools - kubectl top pods/nodes
+
+
+### Warum ? Was macht er ? 
+
+```
+Der Metrics-Server sammelt Informationen von den einzelnen Nodes und Pods
+Er bietet mit 
+
+kubectl top pods
+kubectl top nodes 
+
+ein einfaches Interface, um einen ersten Eindruck über die Auslastung zu bekommen. 
+```
+
+### Walktrough 
+
+```
+## Auf einem der Nodes im Cluster (HA-Cluster) 
+microk8s enable metrics-server 
+
+## Es dauert jetzt einen Moment bis dieser aktiv ist auch nach der Installation 
+## Auf dem Client
+kubectl top nodes 
+kubectl top pods 
+
+```
+
+### Kubernetes 
+
+  * https://kubernetes-sigs.github.io/metrics-server/
+  * kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+### Protokollieren mit Elasticsearch und Fluentd (Devs/Ops)
+
+
+### Installieren 
+
+```
+microk8s enable fluentd
+
+## Zum anzeigen von kibana 
+kubectl port-forward -n kube-system service/kibana-logging 8181:5601
+## in anderer Session Verbindung aufbauen mit ssh und port forwarding 
+ssh -L 8181:127.0.0.1:8181 11trainingdo@167.172.184.80
+
+## Im browser 
+http://localhost:8181 aufrufen 
+```
+
+### Konfigurieren 
+
+```
+Discover:
+Innerhalb von kibana -> index erstellen 
+auch nochmal in Grafiken beschreiben (screenshots von kibana) 
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes
+
+```
+
+### Long Installation step-by-step - Digitalocean
+
+  * https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes
 
 ### Setting up metrics-server - microk8s
 
@@ -1555,6 +1680,167 @@ kubectl top pods
 
   * https://kubernetes-sigs.github.io/metrics-server/
   * kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+## Kubernetes Security 
+
+### Grundlagen und Beispiel (Praktisch)
+
+
+### Geschichte 
+
+  * Namespaces sind die Grundlage für Container 
+  * LXC - Container 
+  
+### Grundlagen 
+ 
+  * letztendlich nur ein oder mehreren laufenden Prozesse im Linux - Systeme 
+  
+### Seit: 1.2.22 Pod Security Admission 
+
+  * 1.2.22 - ALpha - D.h. ist noch nicht aktiviert und muss als Feature Gate aktiviert (Kind)
+  * 1.2.23 - Beta -> d.h. aktiviert  
+
+### Vorgefertigte Regelwerke 
+
+  * privileges - keinerlei Einschränkungen 
+  * baseline - einige Einschränkungen 
+  * restricted - sehr streng 
+
+### Praktisches Beispiel für Version ab 1.2.23 - Problemstellung 
+
+```
+## Schritt 1: Namespace anlegen 
+
+## mkdir manifests/security
+## cd manifests/security 
+## vi 01-ns.yml 
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-ns<tln>
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+
+```
+
+```
+kubectl apply -f 01-ns.yml 
+```
+
+```
+## Schritt 2: Testen mit nginx - pod 
+## vi 02-nginx.yml 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: test-ns<tln>
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+
+```
+
+```
+## a lot of warnings will come up 
+kubectl apply -f 02-nginx.yml
+```
+
+````
+## Schritt 3:
+## Anpassen der Sicherheitseinstellung (Phase1) im Container 
+
+## vi 02-nginx.yml 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: test-ns<tln>
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+      securityContext:     
+        seccompProfile:    
+          type: RuntimeDefault
+```
+
+```
+kubectl delete -f 02-nginx.yml
+kubectl apply -f 02_pod.yml
+kubectl -n test-ns<tln> get pods 
+```
+
+```
+## Schritt 4: 
+## Weitere Anpassung runAsNotRoot 
+## vi 02-nginx.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: test-ns12
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+
+```
+
+```
+## pod kann erstellt werden, wird aber nicht gestartet 
+kubectl delete -f 02_pod.yml 
+kubectl apply -f 02_pod.yml 
+kubectl -n test-ns<tln> get pods
+kubectl -n test-ns<tln> describe pods nginx 
+```
+
+### Praktisches Beispiel für Version ab 1.2.23 -Lösung - Container als NICHT-Root laufen lassen
+
+  * Wir müssen ein image, dass auch als NICHT-Root kaufen kann 
+  * .. oder selbst eines bauen (;o)) 
+  o bei nginx ist das bitnami/nginx 
+ 
+```
+## vi 03-nginx-bitnami.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bitnami-nginx
+  namespace: test-ns12
+spec:
+  containers:
+    - image: bitnami/nginx
+      name: bitnami-nginx
+      ports:
+        - containerPort: 80
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+```
+
+```
+## und er läuft als nicht root 
+kubectl apply -f 03_pod-bitnami.yml 
+kubectl -n test-ns<tln> get pods
+```
 
 ## Kubernetes CI/CD (Optional) 
 
@@ -1722,6 +2008,18 @@ kubectl get all -A
 
 ```
 
+### Logs
+
+```
+kubectl logs <container>
+kubectl logs <deployment>
+## e.g. 
+## kubectl logs -n namespace8 deploy/nginx
+## with timestamp 
+kubectl logs --timestamp -n namespace8 deploy/nginx
+## continously show output 
+kubectl logs -f <container>
+```
 
 ### Referenz
 
