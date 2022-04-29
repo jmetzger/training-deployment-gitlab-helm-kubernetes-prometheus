@@ -44,3 +44,23 @@ metadata:
 kubectl apply -f 01-ns.yml 
 ```
 
+```
+# Schritt 2: Testen mit nginx - pod 
+# vi 02-nginx.yml 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  namespace: test-ns<tln>
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+
+```
+
+```
+kubectl apply -f 02-nginx.yml
