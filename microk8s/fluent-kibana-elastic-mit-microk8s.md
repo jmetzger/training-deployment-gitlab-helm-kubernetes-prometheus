@@ -18,6 +18,8 @@ http://localhost:8181 aufrufen
 
 ```
 Discover:
-
+Innerhalb von kibana -> index erstellen 
+auch nochmal in Grafiken beschreiben (screenshots von kibana) 
+https://www.digitalocean.com/community/tutorials/how-to-set-up-an-elasticsearch-fluentd-and-kibana-efk-logging-stack-on-kubernetes
 
 ```
