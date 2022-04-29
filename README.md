@@ -37,7 +37,7 @@
      * Rolling Updates (Devs/Ops) 
      * Scaling von Deployments (Devs/Ops) 
      * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md) 
-     * Ausblick AutoScaling (Ops) 
+     * [Ausblick AutoScaling (Ops)](/kubernetes/autoscaling.md) 
 
   1. Kubernetes Storage 
      * Grundlagen (Dev/Ops)
