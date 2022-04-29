@@ -75,7 +75,7 @@
      * InfluxDB (Ops) 
   
   1. Kubernetes Security 
-     * [Grundlagen](security/grundlagen-security.md)
+     * [Grundlagen und Beispiel (Praktisch)](security/grundlagen-security.md)
 
   1. Kubernetes CI/CD (Optional) 
      * Canary Deployment (Devs/Ops) 
