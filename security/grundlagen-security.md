@@ -20,7 +20,7 @@
   * baseline - einige Einschränkungen 
   * restricted - sehr streng 
 
-## Praktisches für Version ab 1.2.23 
+## Praktisches Beispiel für Version ab 1.2.23 - Problemstellung 
 
 ```
 # Schritt 1: Namespace anlegen 
@@ -123,4 +123,35 @@ kubectl delete -f 02_pod.yml
 kubectl apply -f 02_pod.yml 
 kubectl -n test-ns<tln> get pods
 kubectl -n test-ns<tln> describe pods nginx 
+```
+
+## Praktisches Beispiel für Version ab 1.2.23 -Lösung - Container als NICHT-Root laufen lassen
+
+  * Wir müssen ein image, dass auch als NICHT-Root kaufen kann 
+  * .. oder selbst eines bauen (;o)) 
+  o bei nginx ist das bitnami/nginx 
+ 
+```
+# vi 03-nginx-bitnami.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bitnami-nginx
+  namespace: test-ns12
+spec:
+  containers:
+    - image: bitnami/nginx
+      name: bitnami-nginx
+      ports:
+        - containerPort: 80
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsNonRoot: true
+```
+
+```
+# und er läuft als nicht root 
+kubectl apply -f 03_pod-bitnami.yml 
+kubectl -n test-ns<tln> get pods
 ```
