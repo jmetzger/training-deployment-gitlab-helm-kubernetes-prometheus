@@ -67,7 +67,7 @@ kubectl apply -f pods-clusterrole.yml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: rolebinding-ns-default-pods
+  name: rolebinding-ns-default-pods<nr>
   namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
