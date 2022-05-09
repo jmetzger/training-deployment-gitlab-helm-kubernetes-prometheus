@@ -30,14 +30,19 @@ create_txt:
 
 ```
 
-job:
+# only one stage - keine Liste 
+stages: 
+  - build 
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt
   artifacts:
     paths:
       - path/*xyz/*
-
-
-
-
 
 ```
 
