@@ -46,6 +46,32 @@ create_txt:
 
 ```
 
+## Artifakten und Name aus Variable vergeben 
+
+  * If your branch-name contains forward slashes
+    * (for example feature/my-feature) 
+    * it’s advised to use $CI_COMMIT_REF_SLUG instead of $CI_COMMIT_REF_NAME 
+      * for proper naming of the artifact.
+
+```
+# .gitlab-ci.yml 
+stages: 
+  - build 
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME" 
+    paths:
+      - path/*xyz/*
+
+
+```
+
 ## Artifakte und Bedingungen 
 
 ```
