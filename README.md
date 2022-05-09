@@ -87,6 +87,7 @@ o Best practces .
   
   1. gitlab ci/cd 
      * [Overview](/gitlab/overview.md)
+     * [Example - Running all stages - default](/gitlab/running-all-stages-default.md)
      * [Using the test - template](/gitlab/example-testtemplate.md) 
      * [Example Defining and using artifacts](/gitlab/example-defining-and-using-artifacts.md)
   1. gitlab 
