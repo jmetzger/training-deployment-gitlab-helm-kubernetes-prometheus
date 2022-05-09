@@ -83,6 +83,12 @@ o Instrumenting Services
 o Best practces .
 
 
+## Themensammlung 
+
+  1. gitlab 
+     * [gitlab Kubernetes Agent with gitops - mode](/example-gitlab-kubernetes-agent-with-gitops-mode.md) 
+
+
 ## Backlog
 
   1. Kubernetes Grundlagen 
