@@ -18,7 +18,7 @@ stages:
 
 create_txt:
   stage: build 
-  scripts:
+  script:
     - echo "hello" > ergebnis.txt 
   artifacts:
     - ergebnis.txt
