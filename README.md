@@ -92,7 +92,7 @@ o Best practces .
      * [Predefined Vars](/gitlab/04-predefined-vars.md)
      * [Rules](/gitlab/05-rules.md)
      * [Example Defining and using artifacts](/gitlab/06-example-defining-and-using-artifacts.md)
-  1. gitlab 
+  1. gitlab / kubernetes (gitops) 
      * [gitlab Kubernetes Agent with gitops - mode](/gitlab/example-gitlab-kubernetes-agent-with-gitops-mode.md)  
 
 
