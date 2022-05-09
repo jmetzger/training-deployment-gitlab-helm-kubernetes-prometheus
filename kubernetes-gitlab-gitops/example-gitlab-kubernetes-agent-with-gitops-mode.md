@@ -13,9 +13,9 @@
 ## Setting up the config (gitops - Style) - sample not yet working 
 
   * Create an agent configuration file 
-  * .gitlab/agents/<name>/ 
+  * .gitlab/agents/name/ 
   * We will use the following convention or name in the training:
-    * gitlab-agent-tn<nr> - gitlab-agent-tn1  
+    * gitlab-agent-tn-nr- - gitlab-agent-tn1  
   * https://docs.gitlab.com/ee/user/clusters/agent/install/index.html#create-an-agent-configuration-file
   * Then in that folder we need to place a configuration - file - config.yaml - NOT !!! - config.yml 
     * THE CONFIGURATION WILL NOT GET DETECTED 
@@ -108,5 +108,9 @@ spec:
 
 
 
-## Example (not working yet) 
-
+## Checking the logs 
+ 
+```
+kubectl logs -n gitlab-agent-tn1 deploy/gitlab-agent
+ 
+ 
