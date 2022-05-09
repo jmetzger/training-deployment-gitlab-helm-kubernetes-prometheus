@@ -21,7 +21,8 @@ create_txt:
   script:
     - echo "hello" > ergebnis.txt 
   artifacts:
-    - ergebnis.txt
+    paths:
+      - ergebnis.txt
 
 ```
 
