@@ -86,9 +86,9 @@ o Best practces .
 ## Themensammlung 
 
   1. gitlab 
-     * [gitlab Kubernetes Agent with gitops - mode](/example-gitlab-kubernetes-agent-with-gitops-mode.md) 
+     * [gitlab Kubernetes Agent with gitops - mode](/gitlab/example-gitlab-kubernetes-agent-with-gitops-mode.md) 
   1. gitlab ci/cd 
-     * [Example Defining and using artifacts](/example-defining-and-using-artifacts.md)
+     * [Example Defining and using artifacts](/gitlab/example-defining-and-using-artifacts.md)
 
 
 ## Backlog
