@@ -121,10 +121,12 @@ deploy_b:
 
   * https://docs.gitlab.com/ee/ci/pipelines/pipeline_architectures.html#child--parent-pipelines
   * in Example: two types of things that could be built independently.
-  * Combines child and DAG in this case 
-  * Trigger is used to start the child - pipeline 
-  * Include not to repeat yourself 
-  * Rules: are like conditions 
+    * Combines child and DAG in this case 
+    * Trigger is used to start the child - pipeline 
+  * Include:
+    * not to repeat yourself + eventually as template (using . - prefix)  
+  * Rules: 
+    * are like conditions 
 
 ```
 # Example 
