@@ -1,4 +1,4 @@
-# Preset Env-Vars some vars are preset in the job 
+# Pedefined vars preset in the job 
 
 ## Example to show them 
 
