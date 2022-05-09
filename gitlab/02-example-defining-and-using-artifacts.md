@@ -72,7 +72,7 @@ create_txt:
 
 ```
 
-## Alle file in einem Verzeichnis recursive 
+## Alle files in einem Verzeichnis recursive 
 
 ```
 # .gitlab-ci.yml 
@@ -96,12 +96,41 @@ create_txt:
 ## Artifakte und Bedingungen 
 
 ```
+# nur artifact erstellen, wenn ein commit-tag gesetzt ist. 
+# Gibt es kein commit-tag ist diese Variable NICHT GESETZT. 
 
 
+## .gitlab-ci.yml 
+stages: 
+  - build 
+
+output_something:
+  stage: build
+  script:
+    - echo "just writing something"
+    - env
+    - echo "CI_COMMIT_TAG:..$CI_COMMIT_TAG.."
+
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "toplevel" > path/you-got-it.txt
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt 
+    - env
+  artifacts:
+    paths:
+      - path/
+
+  rules:
+    - if: $CI_COMMIT_TAG
 
 ```
 
-
+  * Test 1: committen und Pipeline beobachten 
+  * Test 2: Tag über repository > Tags erstellen und nochmal Pipeline beobachten  
 
 ## Using the gitlab - artifacts api 
 
