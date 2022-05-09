@@ -12,7 +12,6 @@ You can download job artifacts by using the GitLab UI or the API.
 ```
 # .gitlab-ci.yml 
 
-# only one stage - keine Liste 
 stages: 
   - build 
 
@@ -30,7 +29,7 @@ create_txt:
 
 ```
 
-# only one stage - keine Liste 
+# .gitlab-ci.yml 
 stages: 
   - build 
 create_txt:
