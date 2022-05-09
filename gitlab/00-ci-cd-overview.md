@@ -65,7 +65,7 @@ deploy_b:
 ### Type of pipelines: DAG (Directed Acyclic Graph) Pipelines
 
   * Image: 
-  * Deploy_a can run, although build_b->test_b is not evening ready
+  * Deploy_a can run, although build_b->test_b is not even ready
   * Because gitlab knows the dependencies by keyword: needs: 
 
 ```
