@@ -25,7 +25,7 @@ create_txt:
 
 ```
 
-## Example creating artifacts with wildcards 
+## Example creating artifacts with wildcards and different name 
 
 ```
 
@@ -40,6 +40,7 @@ create_txt:
     - mkdir -p path/some-xyz
     - echo "some" > path/some-xyz/testtext.txt
   artifacts:
+    name: meine-daten 
     paths:
       - path/*xyz/*
 
