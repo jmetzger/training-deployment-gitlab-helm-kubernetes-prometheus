@@ -24,7 +24,8 @@
 ```
 # gitops:
 # tln1 ersetzen, durch eigene teilnemer - nr. bei default_namespace 
-manifest_projects:
+gitops:
+  manifest_projects:
   - id: dummyhoney/kubernetes-gitops-tn1
     default_namespace: tln1
     paths:
