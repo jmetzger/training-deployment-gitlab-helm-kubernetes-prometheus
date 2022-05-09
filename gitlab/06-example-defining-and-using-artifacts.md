@@ -132,6 +132,77 @@ create_txt:
   * Test 1: committen und Pipeline beobachten 
   * Test 2: Tag über repository > Tags erstellen und nochmal Pipeline beobachten  
 
+
+
+## Passing artifacts between stages (enabled by default) 
+
+```
+image: ubuntu:20.04
+
+# stages are set to build, test, deploy by default 
+
+build:
+  stage: build
+  script:
+    - echo "in building..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+my_unit_test:
+  stage: test
+  script:
+    - ls
+    - cat control.txt
+    - echo "now in unit testing ..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+deploy:
+  stage: deploy
+  script:
+    - ls
+    - cat control.txt
+
+```
+
+## Passing artifacts between stages (enabled by default) - skipping one stage  
+
+```
+# only change in stage: build 
+image: ubuntu:20.04
+
+# stages are set to build, test, deploy by default 
+
+build:
+  stage: build
+  script:
+    - echo "in building..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+my_unit_test:
+  stage: test
+  script:
+    - cat control.txt
+
+deploy:
+  stage: deploy
+  script:
+    - ls
+    - cat control.txt
+
+
+
+```
+
+
+
 ## Using the gitlab - artifacts api 
 
 
