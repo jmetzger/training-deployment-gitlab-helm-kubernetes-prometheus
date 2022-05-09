@@ -201,6 +201,38 @@ deploy:
 
 ```
 
+## Passing artifacts (+ommitting test - staage) 
+
+  * You can decide in which state you need the artifacts 
+
+```
+# only change in stage: build 
+image: ubuntu:20.04
+
+# stages are set to build, test, deploy by default 
+
+build:
+  stage: build
+  script:
+    - echo "in building..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+my_unit_test:
+  stage: test
+  dependencies: []
+  script:
+    - echo "no control.txt here"
+    - ls -la 
+
+deploy:
+  stage: deploy
+  script:
+    - ls
+    - cat control.txt
+```
 
 
 ## Using the gitlab - artifacts api 
