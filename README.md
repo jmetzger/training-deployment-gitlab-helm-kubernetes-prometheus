@@ -88,7 +88,7 @@ o Best practces .
   1. gitlab ci/cd 
      * [Overview](/gitlab/01-overview.md)
      * [Using the test - template](/gitlab/02-example-testtemplate.md)
-     * [Examples running stages](/gitlab/04-examples-running-stages.md) 
+     * [Examples running stages](/gitlab/03-examples-running-stages.md) 
      * [Example Defining and using artifacts](/gitlab/05-example-defining-and-using-artifacts.md)
   1. gitlab 
      * [gitlab Kubernetes Agent with gitops - mode](/gitlab/example-gitlab-kubernetes-agent-with-gitops-mode.md)  
