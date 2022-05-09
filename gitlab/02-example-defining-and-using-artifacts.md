@@ -72,6 +72,27 @@ create_txt:
 
 ```
 
+## Alle file in einem Verzeichnis recursive 
+
+```
+# .gitlab-ci.yml 
+stages: 
+  - build 
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "toplevel" > path/you-got-it.txt
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt 
+  artifacts:
+    paths:
+      - path/
+
+
+```
+
 ## Artifakte und Bedingungen 
 
 ```
