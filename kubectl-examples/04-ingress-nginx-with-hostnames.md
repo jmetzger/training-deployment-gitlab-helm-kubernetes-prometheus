@@ -90,6 +90,9 @@ metadata:
   name: example-ingress
   annotations:
     ingress.kubernetes.io/rewrite-target: /
+    # with the ingress controller from helm, you need to set an annotation 
+    # otherwice it does not know, which controller to use
+    kubernetes.io/ingress.class: nginx 
 spec:
   rules:
   - host: "app12.lab1.t3isp.de"
@@ -140,6 +143,9 @@ metadata:
   name: example-ingress
   annotations:
     ingress.kubernetes.io/rewrite-target: /
+    # with the ingress controller from helm, you need to set an annotation 
+    # otherwice it does not know, which controller to use
+    kubernetes.io/ingress.class: nginx 
 spec:
   rules:
   - host: "app12.lab.t3isp.de"
