@@ -17,6 +17,14 @@ kubectl explain pod.metadata.name
 
 ```
 
+## Namespace im context ändern 
+
+```
+# mein default namespace soll ein anderer sein, z.B eines Projekt
+kubectl config set-context --current --namespace=tln2 
+
+```
+
 ## Hauptkommandos 
 
 ```
@@ -147,6 +155,8 @@ kubectl logs --timestamp -n namespace8 deploy/nginx
 # continously show output 
 kubectl logs -f <container>
 ```
+
+
 
 ## Referenz
 
