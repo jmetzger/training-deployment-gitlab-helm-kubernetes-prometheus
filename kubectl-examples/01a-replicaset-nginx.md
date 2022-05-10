@@ -12,7 +12,7 @@ spec:
       tier: frontend
   template:
     metadata:
-      name: nginx-replica-set
+      name: nginx-replicas
       labels:
         tier: frontend
     spec:
