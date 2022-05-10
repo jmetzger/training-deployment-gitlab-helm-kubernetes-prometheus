@@ -51,4 +51,5 @@
   1. Tipps & Tricks 
      * [Default namespace von kubectl ändern](/kubectl/change-default-namespace.md)
      * [Ingress Controller auf DigitalOcean aufsetzen](/digitalocean/ingress-controller-aufsetzen-mit-helm.md)
+     * [vi einrückungen für yaml](/vim/vim-yaml.md)
 
