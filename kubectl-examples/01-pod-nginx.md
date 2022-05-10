@@ -14,7 +14,7 @@ metadata:
 spec:
   containers:
   - name: web
-    image: nginx
+    image: bitnami/nginx
 
 ```
 
