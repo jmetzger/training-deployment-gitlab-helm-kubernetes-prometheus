@@ -23,6 +23,18 @@ CLUSTER_IMAGE_SCANNING_DISABLED # Set to 1
 
 ```
 
+## Setting a namespace for the project 
+
+```
+# Adjust to your tln - Nr 
+Settings-> CI/CD -> Variables 
+
+KUBE_NAMESPACE   tln1 
+
+
+
+```
+
 ## Reference.
 
   * There is a whole list, what can be disabled
