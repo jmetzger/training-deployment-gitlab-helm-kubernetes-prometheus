@@ -2,20 +2,20 @@
 
 ## Agenda 
   
-  1. gitlab ci/cd 
-     * [Overview](/gitlab/01-overview.md)
-     * [Using the test - template](/gitlab/02-example-testtemplate.md)
-     * [Examples running stages](/gitlab/03-examples-running-stages.md) 
-     * [Predefined Vars](/gitlab/04-predefined-vars.md)
-     * [Rules](/gitlab/05-rules.md)
-     * [Example Defining and using artifacts](/gitlab/06-example-defining-and-using-artifacts.md)
-  
   1. Kubernetes (Refresher) 
      * Aufbau von Kubernetes 
      * Kubernetes und seine Objekte (pods, replicasets, deployments, services, ingress) 
      * Verbinde mit kubectl 
      * Manifeste ausrollen (im Namespace) (2-3)
      * Arbeiten mit non-root images 
+
+ 1. gitlab ci/cd 
+     * [Overview](/gitlab/01-overview.md)
+     * [Using the test - template](/gitlab/02-example-testtemplate.md)
+     * [Examples running stages](/gitlab/03-examples-running-stages.md) 
+     * [Predefined Vars](/gitlab/04-predefined-vars.md)
+     * [Rules](/gitlab/05-rules.md)
+     * [Example Defining and using artifacts](/gitlab/06-example-defining-and-using-artifacts.md)
 
   1. gitlab / Kubernetes (gitops) 
      * [gitlab Kubernetes Agent with gitops - mode](/gitlab/example-gitlab-kubernetes-agent-with-gitops-mode.md)  
