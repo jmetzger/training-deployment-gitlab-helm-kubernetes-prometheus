@@ -24,7 +24,7 @@
      * [Was ist Auto DevOps](/gitlab-ci-cd/was-ist-autodevops.md)
 
      
-     * [Debugging KUBE_CONFIG - Community Edition](kubernetes-gitlab-ci-cd/04-fix-problem-context-auto-devops.md)
+     * [Debugging KUBE_CONTEXT - Community Edition](kubernetes-gitlab-ci-cd/04-fix-problem-context-auto-devops.md)
 
   1. Helm 
 
