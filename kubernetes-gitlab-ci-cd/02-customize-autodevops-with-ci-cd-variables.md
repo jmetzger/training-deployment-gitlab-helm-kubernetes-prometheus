@@ -29,9 +29,8 @@ CLUSTER_IMAGE_SCANNING_DISABLED # Set to 1
 # Adjust to your tln - Nr 
 Settings-> CI/CD -> Variables 
 
+# Important - Remember to have PROTECTED unchecked 
 KUBE_NAMESPACE   tln1 
-
-
 
 ```
 
