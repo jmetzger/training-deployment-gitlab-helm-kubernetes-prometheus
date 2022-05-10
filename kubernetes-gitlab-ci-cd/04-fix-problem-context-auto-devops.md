@@ -1,4 +1,14 @@
-# Debugging kube_config 
+# Debugging KUBE_CONFIG
+
+## Why ? 
+
+```
+In the community edition, deploy to production does not work 
+if KUBE_CONFIG isset in Settings -> CI/CD -> Variables 
+
+deploy to production fails in pipeline 
+
+```
 
 ## Find out the context 
 
