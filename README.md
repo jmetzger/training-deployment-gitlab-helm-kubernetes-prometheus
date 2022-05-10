@@ -27,6 +27,9 @@
      * [Documentation for default ingress nginx](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/)
      * [Beispiel mit Hostnamen](/kubectl-examples/04-ingress-nginx-with-hostnames.md)
 
+ 1. Kubernetes Wartung 
+     * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md)  
+
  1. gitlab ci/cd 
      * [Overview](/gitlab/01-overview.md)
      * [Using the test - template](/gitlab/02-example-testtemplate.md)
