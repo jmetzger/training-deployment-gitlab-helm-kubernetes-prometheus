@@ -3,7 +3,7 @@
 ## Agenda 
   
   1. Kubernetes (Refresher) 
-     * Aufbau von Kubernetes 
+     * [Aufbau von Kubernetes](kubernetes/architecture.md) 
      * Kubernetes und seine Objekte (pods, replicasets, deployments, services, ingress) 
      * Verbinde mit kubectl 
      * Manifeste ausrollen (im Namespace) (2-3)
