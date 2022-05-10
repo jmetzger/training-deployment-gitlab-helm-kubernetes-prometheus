@@ -17,6 +17,15 @@ kubectl explain pod.metadata.name
 
 ```
 
+## Hauptkommandos 
+
+```
+kubectl get 
+kubectl delete 
+kubectl create
+```
+
+
 ## namespaces 
 
 ```
