@@ -67,6 +67,7 @@
      * [Default namespace von kubectl ändern](/kubectl/change-default-namespace.md)
      * [Ingress Controller auf DigitalOcean aufsetzen](/digitalocean/ingress-controller-aufsetzen-mit-helm.md)
      * [vi einrückungen für yaml](/vim/vim-yaml.md)
+     * [gitlab runner as nonroot](/gitlab/gitlab-runner/non-root.md)
 
   1. RootLess 
      * [Offizielles RootLess Docker Image für Nginx](https://github.com/nginxinc/docker-nginx-unprivileged) 
