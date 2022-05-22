@@ -9,7 +9,7 @@
      * Manifeste ausrollen (im Namespace) (2-3)
      * Arbeiten mit non-root images 
 
- 1. Kubernetes Praxis API-Objekte 
+  1. Kubernetes Praxis API-Objekte 
      * [Das Tool kubectl (Devs/Ops)](/kubectl/spickzettel.md)
      * [kubectl example with run](/kubectl/run-with-example.md)
      * Arbeiten mit manifests (Devs/Ops)
@@ -27,21 +27,24 @@
      * [Documentation for default ingress nginx](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/)
      * [Beispiel mit Hostnamen](/kubectl-examples/04-ingress-nginx-with-hostnames.md)
 
- 1. Kubernetes Secrets / Sealed Secrets (bitnami) 
-    * [Welche Arten von secrets gibt es?](/kubernetes/secrets/secrets.md)
-    * [Übung mit secrets](/kubernetes/uebungen-secrets.md)
-    * [Übng mit sealed-secrets](/kubernetes/secrets/sealed-secrets.md)
+  1. Kubernetes Secrets / Sealed Secrets (bitnami) 
+     * [Welche Arten von secrets gibt es?](/kubernetes/secrets/secrets.md)
+     * [Übung mit secrets](/kubernetes/uebungen-secrets.md)
+     * [Übng mit sealed-secrets](/kubernetes/secrets/sealed-secrets.md)
 
- 1. Kubernetes Wartung / Fehleranalyse
+  1. Kubernetes Wartung / Fehleranalyse
      * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md) 
      * [Debugging Ingress](/kubernetes/debugging-ingress.md) 
 
- 1. Kubernetes - Kustomize 
+  1. Kubernetes - Kustomize 
      * [Beispiel ConfigMap - Generator](/kustomize/01-example-configmap.md)
      * [Beispiel Overlay und Patching](/kustomize/02-overlay-example.md)
      * [Resources](/kustomize/resources.md)
 
- 1. gitlab ci/cd 
+  1. Kubernetes - Storage 
+     * [Praxis. Beispiel. NFS](/shared-volumes/nfs-multiple.md) 
+  
+  1. gitlab ci/cd 
      * [Overview](/gitlab/01-overview.md)
      * [Using the test - template](/gitlab/02-example-testtemplate.md)
      * [Examples running stages](/gitlab/03-examples-running-stages.md) 
