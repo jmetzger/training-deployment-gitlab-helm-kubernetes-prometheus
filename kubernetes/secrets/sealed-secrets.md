@@ -36,7 +36,7 @@ kubectl apply -f controller.yaml
 kubeseal --fetch-cert 
 
 # Secret - config erstellen mit dry-run, wird nicht auf Server angewendet (nicht an Kube-Api-Server geschickt) 
-kubectl -n default create secret generic basic-auth --from-literal=user=admin --from-literal=password=change-me --dry-run=client -o yaml > basic-auth.yaml
+kubectl create secret generic basic-auth --from-literal=APP_USER=admin --from-literal=APP_PASS=change-me --dry-run=client -o yaml > basic-auth.yaml
 cat basic-auth.yaml 
 
 # öffentlichen Schlüssel zum Signieren holen 
