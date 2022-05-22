@@ -73,5 +73,7 @@ kubectl logs -n default <controller-ingress-pod>
 
 # Wichtig: 
 # In den Logs von nginx wird nur eine ip anzeigt, wenn sowohl service als auch pod da sind und erreichbar
-
+# Beispiel: Hier ist er erreichbar !! -> IP 10.224.1.4 
+# 10.135.0.5 - - [22/May/2022:07:31:17 +0000] "GET /apple/ HTTP/1.1" 200 12 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36" 497 0.007 [tln2-apple-service-80] [] 10.244.1.4:5678 12 0.004 200 42288726fa35984ccdd07d67aacde8f2
+ 
 ```
