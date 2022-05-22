@@ -28,7 +28,9 @@
      * [Beispiel mit Hostnamen](/kubectl-examples/04-ingress-nginx-with-hostnames.md)
 
  1. Kubernetes Secrets / Sealed Secrets (bitnami) 
+    * [Welche Arten von secrets gibt es?](/kubernetes/secrets/secrets.md)
     * [Übung mit secrets](/kubernetes/uebungen-secrets.md)
+    * [Übng mit sealed-secrets](/kubernetes/secrets/sealed-secrets.md)
 
  1. Kubernetes Wartung / Fehleranalyse
      * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md) 
