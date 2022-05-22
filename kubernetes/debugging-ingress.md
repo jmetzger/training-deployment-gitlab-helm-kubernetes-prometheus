@@ -1,6 +1,6 @@
 # Schritt - für - Schritt Debug Ingress 
 
-## 1. Schritt, was sagen die Logs des controller 
+## 1. Schritt, Nginx-Pods finden und was sagen die Logs des controller 
 
 ```
 # -A alle namespaces 
@@ -10,7 +10,7 @@ kubectl get pods -A | grep -i ingress
 # Hier steht auch drin, wo sie hin geht (zu welcher PodIP) 
 # microk8s -> namespace ingress 
 # Frage: HTTP_STATUS_CODE welcher ? z.B. 404 
-kubectl logs -n ingress <controller-ingress-pod> 
+kubectl logs -n default <controller-ingress-pod> 
 
 # FEHLERFALL 1 (in logs):
 "Ignoring ingress because of error while validating ingress class" 
@@ -19,15 +19,15 @@ kubectl logs -n ingress <controller-ingress-pod>
 # Das funktioniert bei microk8s, aber nicht bei Installation aus helm 
 
 # Zeile bei annotations ergänzen 
-
-
+annotations:
+  kubernetes.io/ingress.class: nginx  
 # kubectl apply -f 03-ingress.yml 
 
 ```
 
 
 
-## 2. Schritt Pods finden, die als Ingress Controller fungieren 
+## 2. Schritt Pods finden, die als Ingress Controller fungieren und log nochmal checken 
 
 ```
 # -A alle namespaces 
@@ -37,10 +37,10 @@ kubectl get pods -A | grep -i ingress
 # Hier steht auch drin, wo sie hin geht (zu welcher PodIP) 
 # microk8s -> namespace ingress 
 # Frage: HTTP_STATUS_CODE welcher ? z.B. 404 
-kubectl logs -n ingress <controller-ingress-pod> 
+kubectl logs -n default <controller-ingress-pod> 
 ```
 
-## 2. Schritt Pods analyieren, die Anfrage bekommen 
+## 3. Schritt Pods analyieren, die Anfrage bekommen 
 
 ```
 # Dann den Pod herausfinden, wo die Anfrage hinging 
@@ -49,5 +49,29 @@ kubectl get pods -o wide
 
 # Den entsprechenden pod abfragen bzgl. der Logs
 kubectl logs <pod-name-mit-ziel-ip>
+
+```
+
+## Fehlerfall: ingress correct, aber service und pod nicht da 
+
+```
+# Es kommt beim Aufrufen der Seite - 503 Server temporarily not available
+
+# Teststellung 
+kubectl delete -f 01-apple.yml 
+
+# Seite aufrufen über browser 
+
+# Das sagen die logs 
+# Es taucht hier auch keine Ziel-IP des pods auf.
+kubectl logs -n default <controller-ingress-pod>
+104.248.254.206 - - [22/May/2022:07:23:28 +0000] "GET /apple/ HTTP/1.1" 503 592 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36" 471 0.000 [tln2-apple-service-80] [] - - - - 6c120f60faa57d2ea4409e87d544b1b0 
+
+# Lösung: Hier sollten wir überprüfen, ob 
+# a) Der Pod an sich erreichbar ist 
+# b) Der service generell erstmal den pod erreichen kann (intern über clusterIP) 
+
+# Wichtig: 
+# In den Logs von nginx wird nur eine ip anzeigt, wenn sowohl service als auch pod da sind und erreichbar
 
 ```
