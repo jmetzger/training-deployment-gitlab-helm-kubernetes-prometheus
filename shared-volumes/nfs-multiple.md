@@ -164,20 +164,26 @@ exit
 kubectl get svc 
 
 # connect with ip and port
-curl http://<cluster-ip>:<port> # port -> > 30000
+kubectl exec -it --rm curly --image=curlimages/curl -- /bin/sh 
+# curl http://<cluster-ip>:<port> # port -> > 30000
+# exit
 
 # now destroy deployment 
 kubectl delete -f 03-deploy.yml 
 
 # Try again - no connection 
-curl http://<cluster-ip>:<port> # port -> > 30000
+kubectl exec -it --rm curly --image=curlimages/curl -- /bin/sh 
+# curl http://<cluster-ip>:<port> # port -> > 30000
+# exit 
+
 
 # now start deployment again 
 kubectl apply -f 03-deploy.yml 
 
 # and try connection again  
-curl http://<cluster-ip>:<port> # port -> > 30000
-
+kubectl exec -it --rm curly --image=curlimages/curl -- /bin/sh 
+# curl http://<cluster-ip>:<port> # port -> > 30000
+# exit 
 ```
 
 
