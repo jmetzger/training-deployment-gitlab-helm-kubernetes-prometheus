@@ -33,3 +33,6 @@ kubectl cluster-info
 
 ```
 
+## Installation: Ref:
+
+  * https://helm.sh/docs/intro/install/
