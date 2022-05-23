@@ -22,3 +22,10 @@ Ein weitere Pod B, soll eben gerade nicht dort laufen wo Pod A
 läuft.
 Im einfachsten Fall gerade nicht auf dem gleichen Host/Node 
 ```
+
+## PodAntiAffinity - auch möglich für pods mit gleichem Label 
+
+```
+# Spezialfall: Ich möchte sicherstellen, des jeder meiner Pods mit gleich label
+# auf einem anderen Node/Host 
+```
