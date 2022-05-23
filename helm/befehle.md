@@ -7,9 +7,11 @@ helm repo list
 helm repo remove gitlab 
 helm repo update 
 
-# Chart herunterladen 
-helm repo pull 
+# Suchen 
+helm search repo mysql # in allen konfigurierten Repos suchen 
 
+# Chart herunterladen 
+helm repo pull bitnami/mysql 
 
 # Releases anzeigen 
 helm list 
