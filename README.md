@@ -36,6 +36,10 @@
      * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md) 
      * [Debugging Ingress](/kubernetes/debugging-ingress.md) 
 
+  1. Kubernetes Pods Disruption Budget 
+     * [PDB - Was/Wie/Warum?](/kubernetes/pdb/background-pdb.md)
+     * [PDB - Uebung](/kubernetes/pdb/uebung.md)
+
   1. Kubernetes - Kustomize 
      * [Beispiel ConfigMap - Generator](/kustomize/01-example-configmap.md)
      * [Beispiel Overlay und Patching](/kustomize/02-overlay-example.md)
