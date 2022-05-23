@@ -16,6 +16,8 @@ helm repo pull bitnami/mysql
 # Releases anzeigen 
 helm list 
 
+# Release installieren - my-mysql ist hier hier release-name 
+helm install my-mysql bitnami-mysql 
 
 
 
