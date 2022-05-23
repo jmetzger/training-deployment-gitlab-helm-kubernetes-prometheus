@@ -38,16 +38,6 @@ spec:
     env:                         
     - name: APP_VERSION          
       value: 1.21.1              
-    - name: APP_FEATURES         
-      value: "backend,stats,reports"
-    - name: APP_POD_IP           
-      valueFrom:                 
-        fieldRef:                
-          fieldPath: status.podIP                                                                                                       
-    - name: APP_POD_NODE       
-      valueFrom:                                                                                                                            
-        fieldRef:                
-          fieldPath: spec.nodeName
     - name: APP_PASSWORD   
       valueFrom:           
         secretKeyRef:      
@@ -58,10 +48,7 @@ spec:
         secretKeyRef:      
           name: mysecret   
           key: APP_EMAIL   
-                           
-    envFrom:               
-    - configMapRef:        
-        name: app-config 
+                          
 
 
 ```
