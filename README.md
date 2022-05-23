@@ -72,8 +72,6 @@
      * [Was ist Auto DevOps](/gitlab-ci-cd/was-ist-autodevops.md)
      * [Debugging KUBE_CONTEXT - Community Edition](kubernetes-gitlab-ci-cd/04-fix-problem-context-auto-devops.md)
 
-  1. Helm 
-
   1. Prometheus 
   
   1. Tipps & Tricks 
@@ -81,6 +79,7 @@
      * [Ingress Controller auf DigitalOcean aufsetzen](/digitalocean/ingress-controller-aufsetzen-mit-helm.md)
      * [vi einrückungen für yaml](/vim/vim-yaml.md)
      * [gitlab runner as nonroot](/gitlab/gitlab-runner/non-root.md)
+     * [curl zum Überprüfen mit Pod](/curlimages-curl.md)
 
   1. RootLess 
      * [Offizielles RootLess Docker Image für Nginx](https://github.com/nginxinc/docker-nginx-unprivileged) 
