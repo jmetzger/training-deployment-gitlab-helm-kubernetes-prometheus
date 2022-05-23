@@ -95,7 +95,7 @@ kubectl apply -k overlays/prod
 ```
 # Step 7:
 # mkdir -p overlays/dev
-# vi overlays/dev/kustomization 
+# vi overlays/dev/kustomization.yml 
 bases:
 - ../../base
 
