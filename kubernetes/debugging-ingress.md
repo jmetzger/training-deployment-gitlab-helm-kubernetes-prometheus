@@ -77,3 +77,19 @@ kubectl logs -n default <controller-ingress-pod>
 # 10.135.0.5 - - [22/May/2022:07:31:17 +0000] "GET /apple/ HTTP/1.1" 200 12 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36" 497 0.007 [tln2-apple-service-80] [] 10.244.1.4:5678 12 0.004 200 42288726fa35984ccdd07d67aacde8f2
  
 ```
+
+
+## Debugging mit Curl 
+
+```
+kubectl run -it --rm curly --image=curlimages/curl -- sh 
+# alternativ direkt verwenden 
+kubectl run -it --rm curly --image=curlimages/curl -- curl 10.14.35.10
+
+# Hiermit dann connection zu services und pods testen 
+kubectl get svc pods -o wide  
+# damit ips sehen 
+
+```
+
+```
