@@ -94,3 +94,7 @@ spec:
 
 
 ```
+
+## Ref:
+
+  * https://k8s-examples.container-solutions.com/examples/PodSecurityPolicy/PodSecurityPolicy.html
