@@ -184,6 +184,7 @@ kubectl describe pods nginx-frontend-<key>
 
 ## Übung 3: PodAntiAffinity (forced) auf anderem Hosts 
 
+```
 # Schritt 1.
 # mkdir pod-affinity-test
 # cd pod-affinity-test
