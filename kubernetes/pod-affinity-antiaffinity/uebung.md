@@ -1,6 +1,6 @@
 # Übung PodAffinity/PodAntiAffinity 
 
-## Übung 1: PodAffinity (forced) - auf gleicher Node/Hostname
+## Übung 1: PodAffinity (required) - auf gleicher Node/Hostname
 
 ```
 # Schritt 1.
