@@ -125,11 +125,16 @@ patchesJson6902:
 ```
 # Schritt 2:
 # vi overlays/prod/service-patch.yaml 
+- op: replace      
+  path: /spec/type 
+  value: NodePort 
+  
 - op: remove
   path: /spec/ports
   value: 
   - name: http
     port: 80
+
 - op: add                                                                                                                                   
   path: /spec/ports
   value: 
