@@ -9,16 +9,27 @@
   * Please only use: helm3. No server-side comoponents needed (in cluster) 
     * Get away from examples using helm2 (hint: helm init) - uses tiller  
 
-## Example 1: We will setup mysql without persistent storage (not helpful in production ;o() 
+## Example 1: We will setup mysql
 
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami 
-helm search repo bitnami 
+# paketliste aktualisieren
 helm repo update
+helm search repo bitnami 
+```
 
+```
+# download chart - Optional 
+# for exercise: to learn how it is structured 
+helm pull bitnami/mysql
+mkdir lookaround 
+cp -a mysql-*.tar.gz lookaround
+cd lookaround
+tar xvf mysql-*.tar.gz 
+```
+
+```
 helm install my-mysql bitnami/mysql
-
-
 ```
 
 
