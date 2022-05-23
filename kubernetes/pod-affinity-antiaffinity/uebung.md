@@ -1,6 +1,6 @@
 # Übung PodAffinity/PodAntiAffinity 
 
-## Übung 1: PodAffinity - auf gleicher Node/Hostname
+## Übung 1: PodAffinity (forced) - auf gleicher Node/Hostname
 
 ```
 # Schritt 1.
@@ -84,7 +84,7 @@ kubectl describe pods nginx-frontend-<key>
 
 ```
 
-## Übung 2: PodAffinity - im gleichen Rack 
+## Übung 2: PodAffinity (forced) - im gleichen Rack 
 
 ```
 # Schritt 1:
