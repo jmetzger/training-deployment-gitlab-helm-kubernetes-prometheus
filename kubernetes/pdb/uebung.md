@@ -72,18 +72,15 @@ kubectl apply -f 01-pdb-test-deploy.yml
 # pdb festlegen 
 # % oder Zahl möglich
 # auch maxUnavailable ist möglich statt minAvailable 
-kind: List
-apiVersion: v1
-items:
-- apiVersion: policy/v1beta1
-  kind: PodDisruptionBudget
-  metadata:
-    name: pdb-test
-  spec:
-    minAvailable: 50%
-    selector:
-      matchLabels:
-        app-test: nginx
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-test
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels:
+      app-test: nginx
 ```
 
 ```
