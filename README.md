@@ -41,6 +41,7 @@
 
   1. Kubernetes PodAffinity/PodAntiAffinity
      * [Warum ?](/kubernetes/pod-affinity-antiaffinity/warum.md)
+     * [Übung](/kubernetes/pod-affinity-antiaffinity/uebung.md)
 
   1. Kubernetes - Kustomize 
      * [Beispiel ConfigMap - Generator](/kustomize/01-example-configmap.md)
