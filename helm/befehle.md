@@ -18,6 +18,7 @@ helm list
 
 # Release installieren - my-mysql ist hier hier release-name 
 helm install my-mysql bitnami-mysql 
+helm install [name] [chart] --dry-run --debug -f <your_values_file> # dry run 
 
 # Nur template parsen 
 helm template bitnami/mysql > test.yml 
