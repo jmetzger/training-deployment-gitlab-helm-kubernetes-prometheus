@@ -23,9 +23,9 @@ helm search repo bitnami
 # for exercise: to learn how it is structured 
 helm pull bitnami/mysql
 mkdir lookaround 
-cp -a mysql-*.tar.gz lookaround
+cp -a mysql-*.tgz lookaround
 cd lookaround
-tar xvf mysql-*.tar.gz 
+tar xvf mysql-*.tgz 
 ```
 
 ```
