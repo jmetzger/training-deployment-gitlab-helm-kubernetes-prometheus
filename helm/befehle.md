@@ -19,7 +19,7 @@ helm list
 # Release installieren - my-mysql ist hier hier release-name 
 helm install my-mysql bitnami-mysql 
 
-
+# 
 
 
 
