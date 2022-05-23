@@ -16,6 +16,7 @@ cd /usr/src
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-0.17.5-linux-amd64.tar.gz
 tar xzvf kubeseal-0.17.5-linux-amd64.tar.gz 
 install -m 755 kubeseal /usr/local/bin/kubeseal
+
 ```
 
 ## Schritt 2: Walkthrough - Server Installation mit kubectl client 
