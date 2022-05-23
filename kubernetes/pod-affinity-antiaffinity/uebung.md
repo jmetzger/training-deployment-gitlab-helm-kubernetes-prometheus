@@ -84,7 +84,7 @@ kubectl describe pods nginx-frontend-<key>
 
 ```
 
-## Übung 2: PodAffinity (forced) - im gleichen Rack 
+## Übung 2: PodAffinity (required) - im gleichen Rack 
 
 ```
 # Schritt 1:
