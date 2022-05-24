@@ -21,7 +21,7 @@ deploy:
     - kubectl config get-contexts
 ```
 
-## Find out the context 
+## Test Context 
 
 ```
 # This overwrites auto devops completely 
@@ -37,6 +37,7 @@ deploy:
 # Take it from the last block 
 # you will see it from the pipeline 
     - kubectl config use-context dummyhoney/tln1:gitlab-tln1
+    - kubectl config set-context --current --namespace tln1 
     - kubectl get pods
     - ls -la
     - id
