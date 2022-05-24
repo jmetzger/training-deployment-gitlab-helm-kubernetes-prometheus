@@ -19,10 +19,10 @@ vi /etc/exports
 exportfs -av 
 ```
 
-## On all clients 
+## On all nodes 
 
 ```
-### Please do this on all servers 
+### Please do this on all servers (if you have access by ssh)
 
 apt install nfs-common 
 # for testing 
@@ -43,9 +43,9 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   # any PV name
-  name: pv-nfs-tln1
+  name: pv-nfs-tln<nr>
   labels:
-    volume: nfs-data-volume-tln1
+    volume: nfs-data-volume-tln<nr>
 spec:
   capacity:
     # storage size
@@ -58,7 +58,7 @@ spec:
     Retain
   nfs:
     # NFS server's definition
-    path: /var/nfs/tln1/nginx
+    path: /var/nfs/tln<nr>/nginx
     server: 192.168.56.106
     readOnly: false
   storageClassName: ""
