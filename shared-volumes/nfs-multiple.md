@@ -83,10 +83,10 @@ kubectl apply -f 01-pv.yml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pv-nfs-claim-tln1
+  name: pv-nfs-claim-tln<nr>
 spec:
   storageClassName: ""
-  volumeName: pv-nfs-tln1
+  volumeName: pv-nfs-tln<nr>
   accessModes:
   - ReadWriteMany
   resources:
