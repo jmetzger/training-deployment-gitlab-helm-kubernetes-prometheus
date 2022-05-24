@@ -115,7 +115,7 @@ kubectl exec -it ubsi3 -- bash
 # Schritt 1:                                                                                             
 # mkdir runtest 
 # cd runtest 
-# vi 03-user-1001.yml 
+# vi 04-user-group-1001.yml 
 apiVersion: v1
 kind: Pod 
 metadata:
