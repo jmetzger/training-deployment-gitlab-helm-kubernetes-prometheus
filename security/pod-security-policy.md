@@ -30,9 +30,6 @@ microk8s start
 ## Aktivieren (so geht's) 
 
 ```
-
-
-
 Hintergründe:
 https://kubernetes.io/docs/concepts/security/pod-security-policy/#troubleshooting
 
