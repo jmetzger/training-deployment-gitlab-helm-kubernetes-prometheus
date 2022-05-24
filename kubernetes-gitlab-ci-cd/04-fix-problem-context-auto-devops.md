@@ -37,7 +37,7 @@ deploy:
 # Take it from the last block 
 # you will see it from the pipeline 
     - kubectl config use-context dummyhoney/tln1:gitlab-tln1
-    - kubectl get pods -n gitlab-agent-tln1
+    - kubectl get pods
     - ls -la
     - id
 ```
