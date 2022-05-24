@@ -9,6 +9,24 @@
 
   * Nein 
 
+## Aktivieren 
+
+  * Der AdmissionController=podSecurityPolicy muss aktiviert sein, dies ist z.B. bei DOKS (Digital Ocean Kubernetes nicht der Fall) 
+  * Wenn er nicht aktiviert ist, greift das angelegte Objekt nicht 
+  * Aktivierung in microk8s 
+  
+```
+# find / -name "kube-apiserver"
+# ${SNAP_DATA}/args/kube-apiserver
+# --enable-admission-plugins="PodSecurityPolicy"
+microk8s stop 
+microk8s start 
+
+# Ref:
+# https://microk8s.io/docs/configuring-services
+
+```
+
 ## Important 
 
   * podSecurityPolicy works ClusterWide, so we need to authorize some users 
