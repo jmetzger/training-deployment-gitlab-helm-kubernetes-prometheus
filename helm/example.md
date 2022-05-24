@@ -33,9 +33,12 @@ helm install my-mysql bitnami/mysql
 ```
 
 
-## Example 1 - continue - fehlerbehebung 
-
+## Example 2 - values in der Kommandozeile 
 ```
+## Vorbereiten - alte Installation löschen
+helm uninstall my-mysql 
+kubectl delete pvc data-my-mysql-0
+
 # Install with persistentStorage disabled - Setting a specific value 
 helm install my-mysql --set primary.persistence.enabled=false bitnami/mysql
 # Alternative if already installed 
