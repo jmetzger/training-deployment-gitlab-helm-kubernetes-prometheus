@@ -68,6 +68,10 @@
   1. gitlab / Kubernetes (gitops) 
      * [gitlab Kubernetes Agent with gitops - mode](/gitlab/example-gitlab-kubernetes-agent-with-gitops-mode.md)  
 
+  1. gitlab / Kubernetes (CI/CD - old-school mit kubectl) 
+     * [Vorteile gitlab-agent](/kubernetes/gitlab/advantage-gitlab-agent.md)
+     * [Installation gitlab-agent for kubernetes](/kubernetes-gitlab-ci-cd/99-gitlab-agent-with-kubectl.md)
+
   1. gitlab / Kubernetes (CI/CD - Auto Devops) 
      * [Was ist Auto DevOps](/gitlab-ci-cd/was-ist-autodevops.md)
      * [Debugging KUBE_CONTEXT - Community Edition](kubernetes-gitlab-ci-cd/04-fix-problem-context-auto-devops.md)
