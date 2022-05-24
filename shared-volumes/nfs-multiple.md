@@ -19,12 +19,20 @@ vi /etc/exports
 exportfs -av 
 ```
 
-## On all nodes 
+## On all nodes (needed for production) 
+
+```
+# 
+apt install nfs-common 
+
+```
+
+## On all nodes (only for testing)
 
 ```
 ### Please do this on all servers (if you have access by ssh)
+## find out, if connection to nfs works ! 
 
-apt install nfs-common 
 # for testing 
 mkdir /mnt/nfs 
 # 192.168.56.106 is our nfs-server 
