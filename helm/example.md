@@ -41,6 +41,7 @@ kubectl delete pvc data-my-mysql-0
 
 # Install with persistentStorage disabled - Setting a specific value 
 helm install my-mysql --set primary.persistence.enabled=false bitnami/mysql
+helm get values my-mysql 
 # Alternative if already installed 
 
 # just as notice 
