@@ -14,8 +14,6 @@ README.md
 ```
 
 ```
-
-```
 ## Step 2: config für agents anlegen
 
 # .gitlab/agents/gitlab-devops-tn1/config.yaml # Achtung kein .yml wird sonst nicht erkannt. 
