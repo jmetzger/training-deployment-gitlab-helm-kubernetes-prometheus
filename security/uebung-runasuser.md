@@ -58,7 +58,7 @@ metadata:
   name: ubsi2
 spec:
   securityContext:
-    runAsUser: 65534:  
+    runAsUser: 65534 
   containers:
   - name: bb
     image: ubuntu
