@@ -108,3 +108,27 @@ kubectl exec -it ubsi3 -- bash
 # touch testfile 
 # ls -la 
 ```
+
+## Example 4: inkl. Gruppe 
+
+```
+# Schritt 1:                                                                                             
+# mkdir runtest 
+# cd runtest 
+# vi 03-user-1001.yml 
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: ubsi4
+spec:
+  securityContext:
+    runAsUser: 1001  
+    runAsGroup: 1001
+  containers:
+  - name: bb
+    image: ubuntu
+    command: ["/bin/bash"]
+    tty: true
+    stdin: true
+ 
+```
