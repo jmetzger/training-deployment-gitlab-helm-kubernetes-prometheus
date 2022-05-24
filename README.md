@@ -82,6 +82,7 @@
      * [curl zum Überprüfen mit Pod](/curlimages-curl.md)
 
   1. RootLess / Security 
+     * [seccomp-profile-default docker](https://github.com/docker/docker-ce/blob/master/components/engine/profiles/seccomp/default.json)
      * [Pod Security Policy](/security/pod-security-policy.md)
      * [Offizielles RootLess Docker Image für Nginx](https://github.com/nginxinc/docker-nginx-unprivileged) 
 
