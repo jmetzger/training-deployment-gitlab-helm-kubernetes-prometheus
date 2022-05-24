@@ -10,6 +10,20 @@ deploy to production fails in pipeline
 
 ```
 
+## Find out the context (without setting it)
+
+```
+# This overwrites auto devops completely 
+#.gitlab-ci.yml 
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  script:
+    - set
+    - kubectl config get-contexts
+```
+
 ## Find out the context 
 
 ```
@@ -22,9 +36,13 @@ deploy:
   script:
     - set
     - kubectl config get-contexts
-# this will be the repo and the name of the agent     
-    - kubectl config use-context dummyhoney/spring-autodevops-tln1:gitlab-devops-tn1
+# this will be the repo and the name of the agent 
+# Take it from the last block 
+# you will see it from the pipeline 
+    - kubectl config use-context dummyhoney/tln1:gitlab-tln1
     - kubectl get pods -n gitlab-agent-tln1
+    - ls -la
+    - id
 ```
 
 ## Fix by setting KUBE_CONFIG 
