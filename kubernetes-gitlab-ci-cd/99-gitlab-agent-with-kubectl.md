@@ -16,7 +16,7 @@ README.md
 ```
 ## Step 2: config für agents anlegen
 
-# .gitlab/agents/gitlab-devops-tn1/config.yaml # Achtung kein .yml wird sonst nicht erkannt. 
+# .gitlab/agents/gitlab-tln<nr>/config.yaml # Achtung kein .yml wird sonst nicht erkannt. 
 # mit folgendem Inhalt 
 
 ci_access:
