@@ -9,7 +9,7 @@
 
   * Nein 
 
-## Aktivieren 
+## Aktivieren (das reicht nicht) 
 
   * Der AdmissionController=podSecurityPolicy muss aktiviert sein, dies ist z.B. bei DOKS (Digital Ocean Kubernetes nicht der Fall) 
   * Wenn er nicht aktiviert ist, greift das angelegte Objekt nicht 
@@ -26,6 +26,18 @@ microk8s start
 # https://microk8s.io/docs/configuring-services
 
 ```
+
+## Aktivieren (so geht's) 
+
+```
+
+
+
+Hintergründe:
+https://kubernetes.io/docs/concepts/security/pod-security-policy/#troubleshooting
+
+```
+
 
 ## Important 
 
