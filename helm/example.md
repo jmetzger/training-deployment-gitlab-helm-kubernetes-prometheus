@@ -49,6 +49,36 @@ helm get values my-mysql
 
 ```
 
+## Example 3: values im extra-file (auch mehrere möglich)
+
+```
+# Aufräumen 
+helm uninstall my-mysql 
+
+```
+
+```
+# vi values.yaml
+primary:                                                                                             
+  persistence:
+    enabled: false 
+```
+
+```
+helm install my-mysql -f values.yaml bitnami/mysql 
+# hilfe
+helm get values --help 
+# Alle, auch defaults anzeigen
+helm get values my-mysql --all # alternativ -a  
+
+helm get values my-mysql -o json 
+helm get values my-mysql # default: yaml ausgabe 
+helm list 
+# Allerdings nur 1 Eintrag, bei upgrade sinds mehrere drin 
+helm history my-mysql
+
+```
+
 ## Referenced
 
   * https://github.com/bitnami/charts/tree/master/bitnami/mysql/#installing-the-chart
