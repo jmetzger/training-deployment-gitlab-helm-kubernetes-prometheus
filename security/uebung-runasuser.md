@@ -87,7 +87,7 @@ kubectl exec -it ubsi2 -- bash
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ubsi1
+  name: ubsi3
 spec:
   securityContext:
     runAsUser: 1001  
