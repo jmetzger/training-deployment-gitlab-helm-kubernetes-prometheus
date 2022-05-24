@@ -125,3 +125,4 @@ spec:
 ## Ref:
 
   * https://k8s-examples.container-solutions.com/examples/PodSecurityPolicy/PodSecurityPolicy.html
+  * https://github.com/intelygenz/lab-microk8s-pod-security-policies/blob/master/6.Enable-Pod-Security-Policy.md#test-it
