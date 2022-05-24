@@ -22,6 +22,7 @@ deploy:
   script:
     - set
     - kubectl config get-contexts
+# this will be the repo and the name of the agent     
     - kubectl config use-context dummyhoney/spring-autodevops-tln1:gitlab-devops-tn1
     - kubectl get pods -n gitlab-agent-tln1
 ```
