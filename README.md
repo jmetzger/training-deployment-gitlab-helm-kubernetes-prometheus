@@ -84,3 +84,6 @@
   1. RootLess 
      * [Offizielles RootLess Docker Image für Nginx](https://github.com/nginxinc/docker-nginx-unprivileged) 
 
+  1. Documentation
+     * [helm dry-run vs. template](https://jhooq.com/helm-dry-run-install/)
+
