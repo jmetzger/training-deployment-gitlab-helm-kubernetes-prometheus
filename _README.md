@@ -30,7 +30,7 @@
   1. Kubernetes Secrets / Sealed Secrets (bitnami) 
      * [Welche Arten von secrets gibt es?](#welche-arten-von-secrets-gibt-es)
      * [Übung mit secrets](#übung-mit-secrets)
-     * [Übng mit sealed-secrets](#übng-mit-sealed-secrets)
+     * [Übung mit sealed-secrets](#übung-mit-sealed-secrets)
 
   1. Kubernetes Wartung / Fehleranalyse
      * [Wartung mit drain / uncordon (Ops)](#wartung-mit-drain--uncordon-ops)
@@ -48,10 +48,16 @@
      * [Beispiel Overlay und Patching](#beispiel-overlay-und-patching)
      * [Resources](#resources)
 
+  1. Kubernetes Paketmanagement (Helm) 
+     * [Warum ? (Dev/Ops)](#warum--devops)
+     * [Grundlagen / Aufbau / Verwendung (Dev/Ops)](#grundlagen--aufbau--verwendung-devops)
+     * [Helm - wichtige Befehle](#helm---wichtige-befehle)
+     * [Praktisches Beispiel bitnami/mysql (Dev/Ops)](#praktisches-beispiel-bitnamimysql-devops)
+
   1. Kubernetes - Storage 
      * [Praxis. Beispiel. NFS](#praxis-beispiel-nfs)
   
-  1. gitlab ci/cd 
+  1. gitlab ci/cd
      * [Overview](#overview)
      * [Using the test - template](#using-the-test---template)
      * [Examples running stages](#examples-running-stages)
@@ -62,11 +68,15 @@
   1. gitlab / Kubernetes (gitops) 
      * [gitlab Kubernetes Agent with gitops - mode](#gitlab-kubernetes-agent-with-gitops---mode)
 
+  1. gitlab / Kubernetes (CI/CD - old-school mit kubectl) 
+     * [Vorteile gitlab-agent](#vorteile-gitlab-agent)
+     * [Step 1: Installation gitlab-agent for kubernetes](#step-1:-installation-gitlab-agent-for-kubernetes)
+     * [Step 2: Debugging KUBE_CONTEXT - Community Edition](#step-2:-debugging-kube_context---community-edition)
+     * [Step 3: gitlab-ci.yml setup for deployment and sample manifest](#step-3:-gitlab-ciyml-setup-for-deployment-and-sample-manifest)
+
   1. gitlab / Kubernetes (CI/CD - Auto Devops) 
      * [Was ist Auto DevOps](#was-ist-auto-devops)
      * [Debugging KUBE_CONTEXT - Community Edition](#debugging-kube_context---community-edition)
-
-  1. Helm 
 
   1. Prometheus 
   
@@ -75,9 +85,16 @@
      * [Ingress Controller auf DigitalOcean aufsetzen](#ingress-controller-auf-digitalocean-aufsetzen)
      * [vi einrückungen für yaml](#vi-einrückungen-für-yaml)
      * [gitlab runner as nonroot](#gitlab-runner-as-nonroot)
+     * [curl zum Überprüfen mit Pod](#curl-zum-überprüfen-mit-pod)
 
-  1. RootLess 
+  1. RootLess / Security 
+     * [seccomp-profile-default docker](https://github.com/docker/docker-ce/blob/master/components/engine/profiles/seccomp/default.json)
+     * [Pod Security Policy](#pod-security-policy)
+     * [RunAsUser Exercise](#runasuser-exercise)
      * [Offizielles RootLess Docker Image für Nginx](https://github.com/nginxinc/docker-nginx-unprivileged)
+
+  1. Documentation
+     * [helm dry-run vs. template](https://jhooq.com/helm-dry-run-install/)
 
 
 <div class="page-break"></div>
@@ -747,16 +764,6 @@ spec:
     env:                         
     - name: APP_VERSION          
       value: 1.21.1              
-    - name: APP_FEATURES         
-      value: "backend,stats,reports"
-    - name: APP_POD_IP           
-      valueFrom:                 
-        fieldRef:                
-          fieldPath: status.podIP                                                                                                       
-    - name: APP_POD_NODE       
-      valueFrom:                                                                                                                            
-        fieldRef:                
-          fieldPath: spec.nodeName
     - name: APP_PASSWORD   
       valueFrom:           
         secretKeyRef:      
@@ -767,10 +774,7 @@ spec:
         secretKeyRef:      
           name: mysecret   
           key: APP_EMAIL   
-                           
-    envFrom:               
-    - configMapRef:        
-        name: app-config 
+                          
 
 
 ```
@@ -783,7 +787,7 @@ kubectl exec -it print-envs-complete -- bash
 ##env | grep -e APP_ -e MYSQL 
 ```
 
-### Übng mit sealed-secrets
+### Übung mit sealed-secrets
 
 
 ### 2 Komponenten 
@@ -802,6 +806,7 @@ cd /usr/src
 wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.5/kubeseal-0.17.5-linux-amd64.tar.gz
 tar xzvf kubeseal-0.17.5-linux-amd64.tar.gz 
 install -m 755 kubeseal /usr/local/bin/kubeseal
+
 ```
 
 ### Schritt 2: Walkthrough - Server Installation mit kubectl client 
@@ -988,6 +993,22 @@ kubectl logs -n default <controller-ingress-pod>
  
 ```
 
+
+### Debugging mit Curl 
+
+```
+kubectl run -it --rm curly --image=curlimages/curl -- sh 
+## alternativ direkt verwenden 
+kubectl run -it --rm curly --image=curlimages/curl -- curl 10.14.35.10
+
+## Hiermit dann connection zu services und pods testen 
+kubectl get svc pods -o wide  
+## damit ips sehen 
+
+```
+
+```
+
 ## Kubernetes Pods Disruption Budget 
 
 ### PDB - Uebung
@@ -1065,18 +1086,15 @@ kubectl apply -f 01-pdb-test-deploy.yml
 ## pdb festlegen 
 ## % oder Zahl möglich
 ## auch maxUnavailable ist möglich statt minAvailable 
-kind: List
-apiVersion: v1
-items:
-- apiVersion: policy/v1beta1
-  kind: PodDisruptionBudget
-  metadata:
-    name: pdb-test
-  spec:
-    minAvailable: 50%
-    selector:
-      matchLabels:
-        app-test: nginx
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pdb-test
+spec:
+  minAvailable: 50%
+  selector:
+    matchLabels:
+      app-test: nginx
 ```
 
 ```
@@ -1140,10 +1158,17 @@ läuft.
 Im einfachsten Fall gerade nicht auf dem gleichen Host/Node 
 ```
 
+### PodAntiAffinity - auch möglich für pods mit gleichem Label 
+
+```
+## Spezialfall: Ich möchte sicherstellen, des jeder meiner Pods mit gleich label
+## auf einem anderen Node/Host 
+```
+
 ### Übung
 
 
-### Übung 1: PodAffinity (forced) - auf gleicher Node/Hostname
+### Übung 1: PodAffinity (required) - auf gleicher Node/Hostname
 
 ```
 ## Schritt 1.
@@ -1227,7 +1252,7 @@ kubectl describe pods nginx-frontend-<key>
 
 ```
 
-### Übung 2: PodAffinity (forced) - im gleichen Rack 
+### Übung 2: PodAffinity (required) - im gleichen Rack 
 
 ```
 ## Schritt 1:
@@ -1663,17 +1688,17 @@ spec:
 
 ```
 ## Step 6:
-kubectl kustomization overlays/dev
+kubectl kustomization overlays/prod
 
 ## or apply it directly 
-kubectl apply -k overlays/prod/
+kubectl apply -k overlays/prod
 
 ```
 
 ```
 ## Step 7:
 ## mkdir -p overlays/dev
-## vi overlays/dev/kustomization 
+## vi overlays/dev/kustomization.yml 
 bases:
 - ../../base
 
@@ -1703,11 +1728,16 @@ patchesJson6902:
 ```
 ## Schritt 2:
 ## vi overlays/prod/service-patch.yaml 
+- op: replace      
+  path: /spec/type 
+  value: NodePort 
+  
 - op: remove
   path: /spec/ports
   value: 
   - name: http
     port: 80
+
 - op: add                                                                                                                                   
   path: /spec/ports
   value: 
@@ -1793,6 +1823,183 @@ resources:
 - github.com/Liujingfang1/kustomize/examples/helloWorld?ref=7050a45134e9848fca214ad7e7007e96e5042c03
 ```
 
+## Kubernetes Paketmanagement (Helm) 
+
+### Warum ? (Dev/Ops)
+
+
+```
+Ein Paket für alle Komponenten
+Einfaches Installieren und Updaten.
+Feststehende Struktur, durch die andere Pakete teilen können 
+```
+
+### Grundlagen / Aufbau / Verwendung (Dev/Ops)
+
+
+### Wo ? 
+
+```
+artifacts helm 
+https://artifacthub.io/
+```
+### Komponenten 
+
+```
+Chart - beeinhaltet Beschreibung und Komponenten 
+tar.gz - Format 
+
+Wenn wir ein Chart ausführen wird eine Release erstellen 
+(parallel: image -> container, analog: chart -> release 
+```
+
+### Installation 
+
+```
+## Beispiel ubuntu 
+## snap install --classic helm
+
+## Cluster muss vorhanden, aber nicht notwendig wo helm installiert 
+
+## Voraussetzung auf dem Client-Rechner (helm ist nichts als anderes als ein Client-Programm) 
+Ein lauffähiges kubectl auf dem lokalen System (welches sich mit dem Cluster verbinden.
+-> saubere -> .kube/config 
+
+## Test
+kubectl cluster-info 
+
+```
+
+### Installation: Ref:
+
+  * https://helm.sh/docs/intro/install/
+
+### Helm - wichtige Befehle
+
+
+```
+## Repos
+helm repo add gitlab http://charts.gitlab.io 
+helm repo list 
+helm repo remove gitlab 
+helm repo update 
+
+## Suchen 
+helm search repo mysql # in allen konfigurierten Repos suchen 
+
+## Chart herunterladen 
+helm repo pull bitnami/mysql 
+
+## Releases anzeigen 
+helm list 
+## history anzeigen 
+helm history my-mysql 
+
+## Release installieren - my-mysql ist hier hier release-name 
+helm install my-mysql bitnami-mysql 
+helm install [name] [chart] --dry-run --debug -f <your_values_file> # dry run 
+## + verwendete values anzeigen 
+helm get values 
+
+## upgrade, wenn vorhanden, ansonsten install 
+helm upgrade --install my-mysql bitnami/mysql 
+
+## Nur template parsen - ohne an den kube-api-server zu schicken  
+helm template my-mysql bitnami/mysql > test.yml 
+## template und hilfeseite aufgaben und vorher alles an den kube-api-server 
+## zur Validierung schicken
+helm install --dry-run my-mysql bitnami/mysql 
+
+
+```
+
+### Praktisches Beispiel bitnami/mysql (Dev/Ops)
+
+
+### Prerequisites 
+
+  * kubectl needs to be installed and configured to access cluster
+  * Good: helm works as unprivileged user as well - Good for our setup 
+  * install helm on ubuntu (client) as root: snap install --classic helm 
+    * this installs helm3
+  * Please only use: helm3. No server-side comoponents needed (in cluster) 
+    * Get away from examples using helm2 (hint: helm init) - uses tiller  
+
+### Example 1: We will setup mysql
+
+```
+helm repo add bitnami https://charts.bitnami.com/bitnami 
+## paketliste aktualisieren
+helm repo update
+helm search repo bitnami 
+```
+
+```
+## download chart - Optional 
+## for exercise: to learn how it is structured 
+helm pull bitnami/mysql
+mkdir lookaround 
+cp -a mysql-*.tgz lookaround
+cd lookaround
+tar xvf mysql-*.tgz 
+```
+
+```
+helm install my-mysql bitnami/mysql
+```
+
+
+### Example 2 - values in der Kommandozeile 
+```
+### Vorbereiten - alte Installation löschen
+helm uninstall my-mysql 
+kubectl delete pvc data-my-mysql-0
+
+## Install with persistentStorage disabled - Setting a specific value 
+helm install my-mysql --set primary.persistence.enabled=false bitnami/mysql
+helm get values my-mysql 
+## Alternative if already installed 
+
+## just as notice 
+## helm uninstall my-mysql 
+
+```
+
+### Example 3: values im extra-file (auch mehrere möglich)
+
+```
+## Aufräumen 
+helm uninstall my-mysql 
+
+```
+
+```
+## vi values.yaml
+primary:                                                                                             
+  persistence:
+    enabled: false 
+```
+
+```
+helm install my-mysql -f values.yaml bitnami/mysql 
+## hilfe
+helm get values --help 
+## Alle, auch defaults anzeigen
+helm get values my-mysql --all # alternativ -a  
+
+helm get values my-mysql -o json 
+helm get values my-mysql # default: yaml ausgabe 
+helm list 
+## Allerdings nur 1 Eintrag, bei upgrade sinds mehrere drin 
+helm history my-mysql
+
+```
+
+### Referenced
+
+  * https://github.com/bitnami/charts/tree/master/bitnami/mysql/#installing-the-chart
+  * https://helm.sh/docs/intro/quickstart/
+
 ## Kubernetes - Storage 
 
 ### Praxis. Beispiel. NFS
@@ -1817,12 +2024,20 @@ vi /etc/exports
 exportfs -av 
 ```
 
-### On all clients 
+### On all nodes (needed for production) 
 
 ```
-#### Please do this on all servers 
-
+## 
 apt install nfs-common 
+
+```
+
+### On all nodes (only for testing)
+
+```
+#### Please do this on all servers (if you have access by ssh)
+### find out, if connection to nfs works ! 
+
 ## for testing 
 mkdir /mnt/nfs 
 ## 192.168.56.106 is our nfs-server 
@@ -1841,9 +2056,9 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   # any PV name
-  name: pv-nfs-tln1
+  name: pv-nfs-tln<nr>
   labels:
-    volume: nfs-data-volume-tln1
+    volume: nfs-data-volume-tln<nr>
 spec:
   capacity:
     # storage size
@@ -1856,7 +2071,7 @@ spec:
     Retain
   nfs:
     # NFS server's definition
-    path: /var/nfs/tln1/nginx
+    path: /var/nfs/tln<nr>/nginx
     server: 192.168.56.106
     readOnly: false
   storageClassName: ""
@@ -1873,10 +2088,10 @@ kubectl apply -f 01-pv.yml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pv-nfs-claim-tln1
+  name: pv-nfs-claim-tln<nr>
 spec:
   storageClassName: ""
-  volumeName: pv-nfs-tln1
+  volumeName: pv-nfs-tln<nr>
   accessModes:
   - ReadWriteMany
   resources:
@@ -1987,9 +2202,235 @@ kubectl exec -it --rm curly --image=curlimages/curl -- /bin/sh
 
 
 
-## gitlab ci/cd 
+## gitlab ci/cd
 
 ### Overview
+
+
+### Pipelines 
+
+  * The foundation of ci/cd are the pipelines 
+  * You can either have preconfigured pipelines (using Auto DevOps) 
+  * Or you can
+    * Adjust them yourself (from Auto Devops, templates) 
+    * Create one from scratch
+  * Pipelines are either defined by Auto Devops or:
+    * By .gitlab-ci.yml - file in the root-level - folder of your project   
+  * There is also an editor under CI/CD -> Editor 
+
+#### Type of pipelines: Basic Pipeline 
+
+  * Image: https://docs.gitlab.com/ee/ci/pipelines/pipeline_architectures.html#basic-pipelines
+  * (each stage runs concurrently) 
+  * Default behaviour 
+
+```
+## Example: 
+stages:
+  - build
+  - test
+  - deploy
+
+image: alpine
+
+build_a:
+  stage: build
+  script:
+    - echo "This job builds something."
+
+build_b:
+  stage: build
+  script:
+    - echo "This job builds something else."
+
+test_a:
+  stage: test
+  script:
+    - echo "This job tests something. It will only run when all jobs in the"
+    - echo "build stage are complete."
+
+test_b:
+  stage: test
+  script:
+    - echo "This job tests something else. It will only run when all jobs in the"
+    - echo "build stage are complete too. It will start at about the same time as test_a."
+
+deploy_a:
+  stage: deploy
+  script:
+    - echo "This job deploys something. It will only run when all jobs in the"
+    - echo "test stage complete."
+
+deploy_b:
+  stage: deploy
+  script:
+    - echo "This job deploys something else. It will only run when all jobs in the"
+    - echo "test stage complete. It will start at about the same time as deploy_a."
+
+```
+
+#### Type of pipelines: DAG (Directed Acyclic Graph) Pipelines
+
+  * Image: 
+  * Deploy_a can run, although build_b->test_b is not even ready
+  * Because gitlab knows the dependencies by keyword: needs: 
+
+```
+## Example:
+stages:
+  - build
+  - test
+  - deploy
+
+image: alpine
+
+build_a:
+  stage: build
+  script:
+    - echo "This job builds something quickly."
+
+build_b:
+  stage: build
+  script:
+    - echo "This job builds something else slowly."
+
+test_a:
+  stage: test
+  needs: [build_a]
+  script:
+    - echo "This test job will start as soon as build_a finishes."
+    - echo "It will not wait for build_b, or other jobs in the build stage, to finish."
+
+test_b:
+  stage: test
+  needs: [build_b]
+  script:
+    - echo "This test job will start as soon as build_b finishes."
+    - echo "It will not wait for other jobs in the build stage to finish."
+
+deploy_a:
+  stage: deploy
+  needs: [test_a]
+  script:
+    - echo "Since build_a and test_a run quickly, this deploy job can run much earlier."
+    - echo "It does not need to wait for build_b or test_b."
+
+deploy_b:
+  stage: deploy
+  needs: [test_b]
+  script:
+    - echo "Since build_b and test_b run slowly, this deploy job will run much later."
+
+
+```
+
+#### Type of pipelines: Child- / Parent - Pipelines 
+
+  * https://docs.gitlab.com/ee/ci/pipelines/pipeline_architectures.html#child--parent-pipelines
+  * in Example: two types of things that could be built independently.
+    * Combines child and DAG in this case 
+    * Trigger is used to start the child - pipeline 
+  * Include:
+    * not to repeat yourself + eventually as template (using . - prefix)  
+  * Rules: 
+    * are like conditions 
+
+```
+## Example 
+## File 1: .gitlab-ci.yml 
+stages:
+  - triggers
+
+trigger_a:
+  stage: triggers
+  trigger:
+    include: a/.gitlab-ci.yml
+  rules:
+    - changes:
+        - a/*
+
+trigger_b:
+  stage: triggers
+  trigger:
+    include: b/.gitlab-ci.yml
+  rules:
+    - changes:
+        - b/*
+```
+
+```
+## File 2: a/.gitlab-ci.yml 
+stages:
+  - build
+  - test
+  - deploy
+
+image: alpine
+
+build_a:
+  stage: build
+  script:
+    - echo "This job builds something."
+
+test_a:
+  stage: test
+  needs: [build_a]
+  script:
+    - echo "This job tests something."
+
+deploy_a:
+  stage: deploy
+  needs: [test_a]
+  script:
+    - echo "This job deploys something."
+```
+
+```
+## File 3: a/.gitlab-ci.yml 
+stages:
+  - build
+  - test
+  - deploy
+
+image: alpine
+
+build_b:
+  stage: build
+  script:
+    - echo "This job builds something else."
+
+test_b:
+  stage: test
+  needs: [build_b]
+  script:
+    - echo "This job tests something else."
+
+deploy_b:
+  stage: deploy
+  needs: [test_b]
+  script:
+    - echo "This job deploys something else."
+```
+
+### Type of pipelines: Ref:
+
+  * https://docs.gitlab.com/ee/ci/pipelines/pipeline_architectures.html
+
+
+### Stages 
+
+  * Stages run one after each other 
+  * They default to: build, test, deploy (if you do not define any) 
+  * If you want to have less, you have to define which 
+  * Reference: 
+
+### Jobs 
+
+  * Jobs define what to do within the stages 
+  * Normally jobs are run concurrently in each stage 
+  * Reference:
+
+
 
 ### Using the test - template
 
@@ -2029,6 +2470,61 @@ CI-CD -> Pipelines -> Try Test-Template
 
 ### Examples running stages
 
+
+### Running default stages 
+
+  * build, test, deploy are stages set by default 
+
+```
+## No stages defined, so build, test and deploy are run 
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - echo "Compile complete."
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
+  script:
+    - echo "Running unit tests... This will take about 60 seconds."
+    - sleep 1
+    - echo "Code coverage is 90%"
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
+```
+
+### only run some 
+
+```
+## einfaches stages - keyword ergänzen und die stages die man haben will 
+stages:
+  - build
+  - deploy
+
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script:
+    - echo "Compiling the code..."
+    - echo "Compile complete."
+
+## unit-test-job wurde gelöscht 
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
+
+```
+
+ * Danach sich die Pipelines anschauen (CI/CD -> Pipeline) 
+
 ### Predefined Vars
 
 
@@ -2062,28 +2558,344 @@ show_env:
 
 ### Example Defining and using artifacts
 
+
+### What is it ? 
+
+```
+Jobs can output an archive of files and directories. This output is known as a job artifact.
+You can download job artifacts by using the GitLab UI or the API.
+```
+
+### Example: Creating an artifact 
+
+```
+## .gitlab-ci.yml 
+
+stages: 
+  - build 
+
+create_txt:
+  stage: build 
+  script:
+    - echo "hello" > ergebnis.txt 
+  artifacts:
+    paths:
+      - ergebnis.txt
+
+```
+
+### Example creating artifacts with wildcards and different name 
+
+```
+
+## .gitlab-ci.yml 
+stages: 
+  - build 
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt
+  artifacts:
+    name: meine-daten 
+    paths:
+      - path/*xyz/*
+
+```
+
+### Artifakten und Name aus Variable vergeben 
+
+  * If your branch-name contains forward slashes
+    * (for example feature/my-feature) 
+    * it’s advised to use $CI_COMMIT_REF_SLUG instead of $CI_COMMIT_REF_NAME 
+      * for proper naming of the artifact.
+
+```
+## .gitlab-ci.yml 
+stages: 
+  - build 
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt
+  artifacts:
+    name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME" 
+    paths:
+      - path/*xyz/*
+
+
+```
+
+### Alle files in einem Verzeichnis recursive 
+
+```
+## .gitlab-ci.yml 
+stages: 
+  - build 
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "toplevel" > path/you-got-it.txt
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt 
+  artifacts:
+    paths:
+      - path/
+
+
+```
+
+### Artifakte und Bedingungen 
+
+```
+## nur artifact erstellen, wenn ein commit-tag gesetzt ist. 
+## Gibt es kein commit-tag ist diese Variable NICHT GESETZT. 
+
+
+### .gitlab-ci.yml 
+stages: 
+  - build 
+
+output_something:
+  stage: build
+  script:
+    - echo "just writing something"
+    - env
+    - echo "CI_COMMIT_TAG:..$CI_COMMIT_TAG.."
+
+create_txt:
+  stage: build 
+  script:
+    - mkdir -p path/my-xyz    
+    - echo "toplevel" > path/you-got-it.txt
+    - echo "hello" > path/my-xyz/ergebnis.txt
+    - mkdir -p path/some-xyz
+    - echo "some" > path/some-xyz/testtext.txt 
+    - env
+  artifacts:
+    paths:
+      - path/
+
+  rules:
+    - if: $CI_COMMIT_TAG
+
+```
+
+  * Test 1: committen und Pipeline beobachten 
+  * Test 2: Tag über repository > Tags erstellen und nochmal Pipeline beobachten  
+
+
+
+### Passing artifacts between stages (enabled by default) 
+
+```
+image: ubuntu:20.04
+
+## stages are set to build, test, deploy by default 
+
+build:
+  stage: build
+  script:
+    - echo "in building..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+my_unit_test:
+  stage: test
+  script:
+    - ls
+    - cat control.txt
+    - echo "now in unit testing ..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+deploy:
+  stage: deploy
+  script:
+    - ls
+    - cat control.txt
+
+```
+
+### Passing artifacts between stages (enabled by default) - only writing it in stage: build 
+
+```
+## only change in stage: build 
+image: ubuntu:20.04
+
+## stages are set to build, test, deploy by default 
+
+build:
+  stage: build
+  script:
+    - echo "in building..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+my_unit_test:
+  stage: test
+  script:
+    - cat control.txt
+
+deploy:
+  stage: deploy
+  script:
+    - ls
+    - cat control.txt
+
+
+
+```
+
+### Passing artifacts (+ommitting test - stage) 
+
+  * You can decide in which state you need the artifacts 
+
+```
+## only change in stage: build 
+image: ubuntu:20.04
+
+## stages are set to build, test, deploy by default 
+
+build:
+  stage: build
+  script:
+    - echo "in building..." >> ./control.txt
+  artifacts:
+    paths:
+    - control.txt
+    expire_in: 1 week
+
+my_unit_test:
+  stage: test
+  dependencies: []
+  script:
+    - echo "no control.txt here"
+    - ls -la 
+
+deploy:
+  stage: deploy
+  script:
+    - ls
+    - cat control.txt
+```
+
+
+### Using the gitlab - artifacts api 
+
+
+
+#### API - Reference:
+
+  * https://docs.gitlab.com/ee/api/job_artifacts.html
+
+
+
+### Reference:
+
+  * https://docs.gitlab.com/ee/ci/pipelines/job_artifacts.html
+
 ## gitlab / Kubernetes (gitops) 
 
 ### gitlab Kubernetes Agent with gitops - mode
 
-## gitlab / Kubernetes (CI/CD - Auto Devops) 
+## gitlab / Kubernetes (CI/CD - old-school mit kubectl) 
 
-### Was ist Auto DevOps
+### Vorteile gitlab-agent
 
-### Debugging KUBE_CONTEXT - Community Edition
+
+### Disadvantage of solution before gitlab agent 
+
+  * the requirement to open up the cluster to the internet, especially to GitLab
+  * the need for cluster admin rights to get the benefit of GitLab Managed Clusters
+  * exclusive support for push-based deployments that might not suit some highly regulated industries
+
+### Advantage
+
+  * Solved the problem of weaknesses.
+
+### Technical 
+
+  * Connected to Websocket Stream of KAS-Server 
+  * Registered with gitlab - project
+
+### Reference:
+
+  * https://about.gitlab.com/blog/2020/09/22/introducing-the-gitlab-kubernetes-agent/
+
+
+### Step 1: Installation gitlab-agent for kubernetes
+
+
+### Steps
+
+```
+### Step 1: 
+
+Create New Repository -
+name: b-tln<nr> 
+
+With 
+README.md
+
+```
+
+```
+### Step 2: config für agents anlegen
+
+## .gitlab/agents/gitlab-tln<nr>/config.yaml # Achtung kein .yml wird sonst nicht erkannt. 
+## mit folgendem Inhalt 
+
+ci_access:
+  projects:
+    - id: dummyhoney/b-tln<nr> 
+
+```
+
+```
+### Step 3: 
+## agent registrieren / Cluster connecten 
+
+Infrastruktur > Kubernetes Clusters -> Connect a cluster (Agent) 
+
+Jetzt solltest du den Agent auswählen können und klickt auf Register 
+```
+
+```
+### Step 4: 
+## Du erhältst die Anweisungen zum Installieren und wandelst das ein bisschen ab, 
+## für das Training:
+
+## Den token verwendest du aus der Anzeige
+## tln1 ersetzt durch jeweils (2x) durch Deine Teilnehmer-Nr. 
+helm upgrade --install gitlab-agent gitlab/gitlab-agent --namespace tln<nr> --create-namespace --set config.token=<token-from-screen>
+
+```
+
+### Step 2: Debugging KUBE_CONTEXT - Community Edition
 
 
 ### Why ? 
 
 ```
-In the community edition, deploy to production does not work 
-if KUBE_CONFIG isset in Settings -> CI/CD -> Variables 
-
-deploy to production fails in pipeline 
+kubectl does not work, because KUBECONFIG is not set properly  
 
 ```
 
-### Find out the context 
+### Find out the context (without setting it)
 
 ```
 ## This overwrites auto devops completely 
@@ -2095,8 +2907,28 @@ deploy:
   script:
     - set
     - kubectl config get-contexts
-    - kubectl config use-context dummyhoney/spring-autodevops-tln1:gitlab-devops-tn1
-    - kubectl get pods -n gitlab-agent-tln1
+```
+
+### Test Context 
+
+```
+## This overwrites auto devops completely 
+##.gitlab-ci.yml 
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  script:
+    - set
+    - kubectl config get-contexts
+## this will be the repo and the name of the agent 
+## Take it from the last block 
+## you will see it from the pipeline 
+    - kubectl config use-context dummyhoney/tln1:gitlab-tln1
+    - kubectl config set-context --current --namespace tln1 
+    - kubectl get pods
+    - ls -la
+    - id
 ```
 
 ### Fix by setting KUBE_CONFIG 
@@ -2110,7 +2942,118 @@ KUBE_CONFIG dummyhoney/spring-autodevops-tln1:gitlab-devops-tn1
 
 ```
 
-## Helm 
+### Step 3: gitlab-ci.yml setup for deployment and sample manifest
+
+
+### Schritt 1: manifests - Struktur einrichten
+
+```
+## vi manifests/prod/01-pod.yml 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-static-web2
+  labels:
+    webserver: nginx
+spec:
+  containers:
+  - name: web
+    image: bitnami/nginx
+
+```
+
+### Schritt 2: gitlab-ci.yml mit kubectl apply --recursive -f 
+
+```
+## CI-CD -> Editor oder .gitlab-ci.yml im Wurzelverzeichnis 
+## only change in stage: build 
+image: 
+  name: bitnami/kubectl
+  entrypoint: [""]
+
+deploy:
+  stage: deploy
+  script:
+    - set
+    - kubectl config get-contexts
+    - kubectl config use-context dummyhoney/b-tln1:gitlab-tln1
+    - kubectl config set-context --current --namespace tln1
+    - ls -la
+    - kubectl apply --recursive -f manifests/prod
+
+```
+
+### Schritt 3: pipeline anschauen
+
+  * War es erfolgreich - kein Fehler ? 
+
+### Schritt 4: Sichtprüfen mit kubectl über Client (lokaler Rechner/Desktop) 
+
+```
+kubectl get pods | grep web2 
+```
+
+## gitlab / Kubernetes (CI/CD - Auto Devops) 
+
+### Was ist Auto DevOps
+
+### Debugging KUBE_CONTEXT - Community Edition
+
+
+### Why ? 
+
+```
+kubectl does not work, because KUBECONFIG is not set properly  
+
+```
+
+### Find out the context (without setting it)
+
+```
+## This overwrites auto devops completely 
+##.gitlab-ci.yml 
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  script:
+    - set
+    - kubectl config get-contexts
+```
+
+### Test Context 
+
+```
+## This overwrites auto devops completely 
+##.gitlab-ci.yml 
+deploy:
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  script:
+    - set
+    - kubectl config get-contexts
+## this will be the repo and the name of the agent 
+## Take it from the last block 
+## you will see it from the pipeline 
+    - kubectl config use-context dummyhoney/tln1:gitlab-tln1
+    - kubectl config set-context --current --namespace tln1 
+    - kubectl get pods
+    - ls -la
+    - id
+```
+
+### Fix by setting KUBE_CONFIG 
+
+```
+## This is a problem in the community edition (CE) 
+## We need to fix it like so.
+## Adjust it to your right context
+## IN Settings -> CI/CD -> Variables 
+KUBE_CONFIG dummyhoney/spring-autodevops-tln1:gitlab-devops-tn1 
+
+```
 
 ## Prometheus 
 
@@ -2193,8 +3136,301 @@ Eigenschaft: <return> # springt eingerückt in die nächste Zeile um 2 spaces ei
 
   *  https://docs.gitlab.com/runner/install/kubernetes.html#running-with-non-root-user
 
-## RootLess 
+### curl zum Überprüfen mit Pod
+
+
+### Situation 
+
+  * Kein Zugriff auf die Nodes, zum Testen von Verbindungen zu Pods und Services über die ClusterIP 
+
+### Lösung 
+
+```
+## Achtung http:// muss angegeben werden, sonst funktioniert das Kommando möglichweiser nicht
+## -L sollte man immer verwenden, leitet um 
+## --output - gibt es auf stdout (Bildschirm aus) 
+kubectl run -it --rm --image=curlimages/curl curly -- curl -L --output - http://www.test.de 
+
+```
+
+## RootLess / Security 
+
+### seccomp-profile-default docker
+
+  * https://github.com/docker/docker-ce/blob/master/components/engine/profiles/seccomp/default.json
+
+### Pod Security Policy
+
+
+### Welches Objekt ?
+
+  * kubectl api-resources | grep -i podsecuritypolicy
+  * short: psp 
+   
+### Namespacefähig ?
+
+  * Nein 
+
+### Aktivieren (das reicht nicht) 
+
+  * Der AdmissionController=podSecurityPolicy muss aktiviert sein, dies ist z.B. bei DOKS (Digital Ocean Kubernetes nicht der Fall) 
+  * Wenn er nicht aktiviert ist, greift das angelegte Objekt nicht 
+  * Aktivierung in microk8s 
+  
+```
+## find / -name "kube-apiserver"
+## ${SNAP_DATA}/args/kube-apiserver
+## --enable-admission-plugins="PodSecurityPolicy"
+microk8s stop 
+microk8s start 
+
+## Ref:
+## https://microk8s.io/docs/configuring-services
+
+```
+
+### Aktivieren (so geht's) 
+
+```
+Hintergründe:
+https://kubernetes.io/docs/concepts/security/pod-security-policy/#troubleshooting
+
+```
+
+
+### Important 
+
+  * podSecurityPolicy works ClusterWide, so we need to authorize some users 
+  * who are able to edit the policies 
+
+
+```
+## There is really a clusterrole that can is called edit and can edit 
+## So we need some one, who is allowed to do so. 
+kubectl get clusterrole | grep ^edit
+##edit                                                                   2022-05-08T06:51:30Z
+
+```
+
+
+
+```
+## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pod-security-policy-psp-namespace
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: pod-security-policy-psp
+spec:
+  privileged: false  # Don't allow privileged pods!
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+    - '*'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pod-security-policy-user
+  namespace: pod-security-policy-psp-namespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-security-policy-psp-user-editor
+  namespace: pod-security-policy-psp-namespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+  - kind: ServiceAccount
+    name: pod-security-policy-psp-namespace
+    namespace: pod-security-policy-psp-namespace
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pause
+  namespace: pod-security-policy-psp-namespace-unprivileged
+spec:
+  containers:
+    - name: pause
+      image: k8s.gcr.io/pause
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pause
+  namespace: pod-security-policy-psp-namespace-privileged
+spec:
+  containers:
+    - name: pause
+      image: k8s.gcr.io/pause
+      securityContext:
+        privileged: true
+
+
+```
+
+### Ref:
+
+  * https://k8s-examples.container-solutions.com/examples/PodSecurityPolicy/PodSecurityPolicy.html
+  * https://github.com/intelygenz/lab-microk8s-pod-security-policies/blob/master/6.Enable-Pod-Security-Policy.md#test-it
+
+### RunAsUser Exercise
+
+
+### Hinweis:
+
+```
+Der USER muss auf dem System nicht existieren.
+Die Einstellung 
+
+securityContext:
+  runasuser: 12000
+  
+überschreibt die Einstellung unter welchem User der Docker - Container läuft.
+Directive: USER 
+
+Allerdings kommt es zu Problemen, wenn der Docker die Sofware (ENTRYPOINT) und 
+nachfolgende Software nicht starten kann und der Container stoppt dann
+```
+
+### Example 1: (normal mit root) 
+
+```
+## Schritt 1: 
+## mkdir runtest 
+## cd runtest 
+## vi 01-privileged.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubsi1
+spec:  
+  containers:
+  - name: bb
+    image: ubuntu
+    command: ["/bin/bash"]
+    tty: true
+    stdin: true
+```
+
+```
+## Schritt 2:
+## Ausführen 
+kubectl apply -f 01-privileged.yml 
+kubectl exec -it ubsi1 -- bash 
+## id 
+
+```
+
+### Example 2: (als nobody: 65534)
+
+```
+## Schritt 1: 
+## mkdir runtest 
+## cd runtest 
+## vi 02-nobody-privileged.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubsi2
+spec:
+  securityContext:
+    runAsUser: 65534 
+  containers:
+  - name: bb
+    image: ubuntu
+    command: ["/bin/bash"]
+    tty: true
+    stdin: true
+```
+
+```
+## Schritt 2:
+## Ausführen 
+kubectl apply -f 01-nobody-privileged.yml 
+kubectl exec -it ubsi2 -- bash 
+## id 
+## touch testfile 
+## ls -la 
+```
+
+### Example 3: (als 1001 - nutzer existiert nicht) 
+
+```
+## Schritt 1: 
+## mkdir runtest 
+## cd runtest 
+## vi 03-user-1001.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubsi3
+spec:
+  securityContext:
+    runAsUser: 1001  
+  containers:
+  - name: bb
+    image: ubuntu
+    command: ["/bin/bash"]
+    tty: true
+    stdin: true
+```
+
+```
+## Schritt 2:
+## Ausführen 
+kubectl apply -f 03-user-1001.yml 
+kubectl exec -it ubsi3 -- bash 
+## id 
+## touch testfile 
+## ls -la 
+```
+
+### Example 4: inkl. Gruppe 
+
+```
+## Schritt 1:                                                                                             
+## mkdir runtest 
+## cd runtest 
+## vi 04-user-group-1001.yml 
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: ubsi4
+spec:
+  securityContext:
+    runAsUser: 1001  
+    runAsGroup: 1001
+  containers:
+  - name: bb
+    image: ubuntu
+    command: ["/bin/bash"]
+    tty: true
+    stdin: true
+ 
+```
 
 ### Offizielles RootLess Docker Image für Nginx
 
   * https://github.com/nginxinc/docker-nginx-unprivileged
+
+## Documentation
+
+### helm dry-run vs. template
+
+  * https://jhooq.com/helm-dry-run-install/
