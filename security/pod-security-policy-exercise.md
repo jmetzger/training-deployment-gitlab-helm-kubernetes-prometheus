@@ -417,12 +417,14 @@ kubectl -n kube-system get pods | grep nginx
 kubectl -n kube-system -l app=nginx-host get pods -o yaml | grep -i hostNetwork
 
 # Try to look inside 
-kubectl -n kube-system -exec deploy/deployment-nginx-host -- bash 
+kubectl -n kube-system exec -it deploy/nginx-deployment-host -- bash
 # apt update
-# apt install -y iproute2
+# apt install -y iproute2 procps
 # ip a 
+# ps aux 
 # exit 
 
+kubectl -n kube-system delete -f 05-nginx-host.yml 
 kubectl delete -f . 
 
 ```
