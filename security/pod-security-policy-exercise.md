@@ -280,5 +280,6 @@ kubectl get deployment,rs.pods
 kubectl describe rs 
 # See also - Got the point 
 kubectl get psp restrictive -o yaml 
-kubectl describe psp psp-restrictive 
+kubectl describe psp restrictive 
+kubectl describe psp restrictive | grep Host 
 ```
