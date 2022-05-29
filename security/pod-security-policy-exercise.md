@@ -413,4 +413,16 @@ kubectl -n kube-system apply -f 05-nginx-host.yml
 # This work, and we want to figure out, if hostname isset. 
 kubectl -n kube-system get pods | grep nginx 
 
+# See if  hostNetwork isset
+kubectl -n kube-system -l app=nginx-host get pods -o yaml | grep -i hostNetwork
+
+# Try to look inside 
+kubectl -n kube-system -exec deploy/deployment-nginx-host -- bash 
+# apt update
+# apt install -y iproute2
+# ip a 
+# exit 
+
+kubectl delete -f . 
+
 ```
