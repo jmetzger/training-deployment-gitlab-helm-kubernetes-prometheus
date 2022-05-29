@@ -279,6 +279,6 @@ kubectl get deployment,rs.pods
 # HostNetwork is in the way 
 kubectl describe rs 
 # See also - Got the point 
-kubectl get psp psp-restrictive -o yaml 
+kubectl get psp restrictive -o yaml 
 kubectl describe psp psp-restrictive 
 ```
