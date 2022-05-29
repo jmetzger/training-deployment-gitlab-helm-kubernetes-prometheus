@@ -60,7 +60,15 @@ kubectl describe -l test=liveness pods
 kubectl delete -f 01-pod-liveness-command.yml
  
 ``` 
- 
- ## Reference:
+
+## Übung 2: Liveness Probe (HTTP)
+
+```
+
+
+
+
+
+## Reference:
  
    * https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
