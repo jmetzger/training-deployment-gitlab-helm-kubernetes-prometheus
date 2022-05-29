@@ -281,5 +281,5 @@ kubectl describe rs
 # See also - Got the point 
 kubectl get psp restrictive -o yaml 
 kubectl describe psp restrictive 
-kubectl describe psp restrictive | grep Host 
+kubectl describe psp restrictive | grep "Host Network" 
 ```
