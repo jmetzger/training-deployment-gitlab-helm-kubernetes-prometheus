@@ -32,6 +32,10 @@
      * [Übung mit secrets](/kubernetes/uebungen-secrets.md)
      * [Übung mit sealed-secrets](/kubernetes/secrets/sealed-secrets.md)
 
+  1. Kubernetes Probes (Liveness and Readiness) 
+     * [Übung Liveness-Probe](/probes/uebung-liveness.md)
+     * [Übung Readiness-Probe](/probes/uebung-readiness.md) 
+  
   1. Kubernetes Wartung / Fehleranalyse
      * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md) 
      * [Debugging Ingress](/kubernetes/debugging-ingress.md) 
