@@ -121,7 +121,7 @@ kubectl config view
 kubectl delete -f 01-pod.yml 
 ```
 
-## Übung 2a: Set psp, clusterrole, clusterrolebinding and try to deploy nginx 
+## Übung 2a: Set psp (restrictive), clusterrole, clusterrolebinding and try to deploy nginx 
 
 ```
 # Schritt 1:
@@ -282,4 +282,135 @@ kubectl describe rs
 kubectl get psp restrictive -o yaml 
 kubectl describe psp restrictive 
 kubectl describe psp restrictive | grep "Host Network" 
+```
+```
+# Cleanup 
+cd
+cd manifests/psp-restrictive 
+kubectl delete -f . 
+
+```
+
+
+
+## Übung 3: psp (restrictive), clusterrole, rolebinding 
+
+```
+# Schritt 1: Create permissive psp 
+cd 
+cd manifests
+mkdir psp-permissive 
+cd psp-permissive 
+```
+
+```
+# vi 01-psp.yml 
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: permissive
+spec:
+  privileged: true
+  hostNetwork: true
+  hostIPC: true
+  hostPID: true
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  hostPorts:
+  - min: 0
+    max: 65535
+  volumes:
+  - '*'
+```
+  
+```
+# apply that
+kubectl apply -f 01-psp.yml 
+kubectl get psp 
+```
+
+```
+# Schritt 2: Create a clusterrole 
+# create a clusterrole 
+# vi 02-clusterrole.yml 
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: psp-permissive
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - permissive
+  verbs:
+  - use
+```
+
+```
+kubectl apply -f 02-clusterrole.yml 
+kubectl get clusterrole 
+```
+
+```
+# Schritt 3: clusterrolebinding anlegen 
+# create clusterrolebinding but only for use default in kube-system 
+# vi 03-clusterrolebinding-kube-system.yml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: default-sa-at-kube-system-as-cluster-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: kube-system
+```
+
+```
+kubectl apply -f 03-clusterrolebinding-kube-system.yml
+```
+
+```
+# Schritt 4: Testing Host Network - Anforderung 
+# same as in last exercise
+# vi 05-nginx-host.yml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-host
+  labels:
+    app: nginx-host
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-host
+  template:
+    metadata:
+      labels:
+        app: nginx-host
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.15.4
+      hostNetwork: true
+```
+
+```
+# Apply but not to kube-system namespace
+kubectl -n kube-system apply -f 05-nginx-host.yml 
+# This work, and we want to figure out, if hostname isset. 
+kubectl -n kube-system get pods | grep nginx 
+
 ```
