@@ -96,4 +96,5 @@
 
   1. Documentation
      * [helm dry-run vs. template](https://jhooq.com/helm-dry-run-install/)
+     * [Marktuebersicht Kubernetes Hosting](/misc/kubernetes-hosting.md)
 
