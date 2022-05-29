@@ -121,4 +121,164 @@ kubectl config view
 kubectl delete -f 01-pod.yml 
 ```
 
+## Übung 2a: Set psp, clusterrole, clusterrolebinding and try to deploy nginx 
 
+```
+# Schritt 1:
+# psp erstellen 
+# mkdir psp-restrictive 
+# cd psp-restrictive 
+# vi 01-psp.yml 
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restrictive
+spec:
+  privileged: false
+  hostNetwork: false
+  allowPrivilegeEscalation: false
+  defaultAllowPrivilegeEscalation: false
+  hostPID: false
+  hostIPC: false
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - 'configMap'
+  - 'downwardAPI'
+  - 'emptyDir'
+  - 'persistentVolumeClaim'
+  - 'secret'
+  - 'projected'
+  allowedCapabilities:
+  - '*'
+  
+```
+
+```
+kubectl apply -f 01-psp.yml
+```
+
+```
+# psp does not work without
+# 1. a role/clusterrole 
+# 2. a rolebind / clusterrolebinding
+# Let's start with 1. 
+# vi 02-clusterrole.yml 
+# Decides which policy to use
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: psp-restrictive
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - restrictive
+  verbs:
+  - use
+```
+
+```
+kubectl apply -f 02-clusterrole.yml 
+```
+
+```
+# Now we need to define, how uses this clusterrole 
+# In our case all users, that belong to the Group system::users 
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: psp-restrictive
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - restrictive
+  verbs:
+  - use
+```
+
+```
+kubectl apply -f 03-clusterrolebinding.yml 
+```
+
+```
+# Now deploy an nginx server 
+# vi 04-nginx-deploy.yml 
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: psp-restrictive
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - restrictive
+  verbs:
+  - use
+```
+
+```
+kubectl apply -f 04-nginx-deploy.yml 
+# IT works 
+kubectl get deploy,rs,pods
+```
+
+## Step 2b: Deploy nginx and WANTING access to host network 
+
+  * Need Step 2a to be done firstly 
+
+```
+# vi 05-nginx-host.yml 
+# With access to host 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-host
+  labels:
+    app: nginx-host
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-host
+  template:
+    metadata:
+      labels:
+        app: nginx-host
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.15.4
+      hostNetwork: true
+
+
+```
+
+```
+# to easier see nginx-deployment-host
+kubectl delete -f 04-nginx.host.yml 
+kubectl apply -f 05-nginx-host.yml 
+# Does not work, why ? 
+kubectl get deployment,rs.pods 
+```
+
+```
+# HostNetwork is in the way 
+kubectl describe rs 
+# See also - Got the point 
+kubectl get psp psp-restrictive -o yaml 
+kubectl describe psp psp-restrictive 
+```
