@@ -34,7 +34,7 @@
 
   1. Kubernetes Probes (Liveness and Readiness) 
      * [Übung Liveness-Probe](/probes/uebung-liveness.md)
-     * [Übung Readiness-Probe](/probes/uebung-readiness.md) 
+     * [Funktionsweise Readiness-Probe vs. Liveness-Probe](/probes/readiness.md) 
   
   1. Kubernetes Wartung / Fehleranalyse
      * [Wartung mit drain / uncordon (Ops)](/kubectl/uncordon-drain.md) 
