@@ -29,4 +29,13 @@
 
 Quelle: https://www.devopsschool.com/
 
+### Server 
+
+  * Sammelt (Pullen von Endpunkten) und speichert Daten. (TDB = Timeseries Database)
+  * Wird von Grafana angefragt, dort bezieht Grafana seine Daten über eine API 
+
 ## Grafana ? 
+
+  * Grafana wird meist verwendet um die grafische Auswertung zu machen.
+  * Mit Grafana kann ich einfach Dashboards verwenden 
+  * Ich kann sehr leicht festlegen (Durch Data Sources), so meine Daten herkommen
