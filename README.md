@@ -83,6 +83,7 @@
      * [Debugging KUBE_CONTEXT - Community Edition](kubernetes-gitlab-ci-cd/04-fix-problem-context-auto-devops.md)
 
   1. Prometheus 
+     * [Prometheus/Grafana Überblick](/prometheus/overview.md)
   
   1. Tipps & Tricks 
      * [Default namespace von kubectl ändern](/kubectl/change-default-namespace.md)
