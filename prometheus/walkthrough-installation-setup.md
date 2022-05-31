@@ -63,6 +63,10 @@ kubectl get statefulset -n prometheus -o yaml > sts-prometheus-server.yml
 # 1) prometheus - server
 # 2) der dazugehörige config-reloader als Side-Car 
 kubectl get sts -n prometheus prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.spec.template.spec.containers[*].image}'
+
+# Aber wer managed den server -> managed-by -> kubernetes-operator 
+kubectl get sts -n prometheus prometheus-prometheus-kube-prometheus-prometheus -o jsonpath="{.spec.template.metadata.labels}" | jq .
+
 ```
 
 
