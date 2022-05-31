@@ -26,8 +26,46 @@ snap install --classic helm
 
 ```
 # add prometheus repo 
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# install stack into new prometheus namespace 
+helm install -n prometheus --create-namespace prometheus prometheus-community/kube-prometheus-stack
+
+# After installation look at the pods 
+# You should see 3 pods 
+kubectl --namespace prometheus get pods -l "release=prometheus"
+
+# After a while it should be more pods
+kubectl get all -n prometheus
 
 ```
+
+### Step 3: Let's explain 
+
+```
+# 2 Stateful sets
+kubectl get statefulsets  -n prometheus
+# output 
+# alertmanager-prometheus-kube-prometheus-alertmanager   1/1     5m14s
+# prometheus-prometheus-kube-prometheus-prometheus.      1/1.    5m23s
+```
+```
+# Moving part 1: 
+# prometheus-prometheus-kube-prometheus-prometheus
+# That is the core prometheus server based on the main image 
+
+# Let's validate 
+# schauen wir mal in das File 
+kubectl get statefulset -n prometheus -o yaml > sts-prometheus-server.yml
+
+# Und vereinfacht (jetzt sehen wir direkt die beiden verwendeten images 
+# 1) prometheus - server
+# 2) der dazugehörige config-reloader als Side-Car 
+kubectl get sts -n prometheus prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.spec.template.spec.containers[*].image}'
+```
+
+
 
 ## Reference:
 
