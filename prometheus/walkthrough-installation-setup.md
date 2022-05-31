@@ -41,7 +41,7 @@ kubectl get all -n prometheus
 
 ```
 
-### Step 3: Let's explain 
+### Step 3a Let's explain (der Prometheus - Server)  
 
 ```
 # 2 Stateful sets
@@ -59,11 +59,13 @@ kubectl get statefulsets  -n prometheus
 # schauen wir mal in das File 
 kubectl get statefulset -n prometheus -o yaml > sts-prometheus-server.yml
 
-# Und vereinfacht (jetzt sehen wir direkt die beiden verwendeten images 
+# Und vereinfacht (jetzt sehen wir direkt die beiden verwendeten images)
 # 1) prometheus - server
 # 2) der dazugehörige config-reloader als Side-Car 
 kubectl get sts -n prometheus prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.spec.template.spec.containers[*].image}'
 ```
+
+
 
 
 
