@@ -92,7 +92,7 @@ kind: PrometheusRule
 kind: ServiceMonitor
 ```
 
-## Step 3c: How are the StatefulSets created
+### Step 3c: How are the StatefulSets created
 
 ```
 # New custom resource definitions are created 
@@ -103,7 +103,7 @@ kind: ServiceMonitor
 
 ```
 
-## Step 3d: How are PrometheusRules created 
+### Step 3d: How are PrometheusRules created 
 
 ```
 # PrometheusRule are manipulated by the MutationHook when they enter the AdmissionController
@@ -150,7 +150,7 @@ webhooks:
     sideEffects: None
 ```
 
-## Step 4: Let's look into Deployments
+### Step 4: Let's look into Deployments
 
 ```
 kubectl -n prometheus get deploy 
@@ -158,7 +158,7 @@ kubectl -n prometheus get deploy
 
   * What do they do 
 
-## Step 5: Let's look into DaemonSets 
+### Step 5: Let's look into DaemonSets 
 
 ```
 kubectl -n prometheus get ds
@@ -167,14 +167,14 @@ kubectl -n prometheus get ds
 # so it is available for prometheus at the endpoint 
 ```
 
-## Helm -> prometheus stack -> What does it do 
+### Helm -> prometheus stack -> What does it do 
 
   * Sets up Monitoring Stack
   * Configuration for your K8s cluster 
     * Worker Nodes monitored 
     * K8s components (pods a.s.o) are monitored 
 
-## Where does configuration come from ? 
+### Where does configuration come from ? 
 
 ```
 # roundabout 31 configmaps 
@@ -185,10 +185,37 @@ kubectl -n prometheus get secrets
 
 ```
 
+### CRD's were created 
 
+```
+# custom resource definitions 
+kubectl -n prometheus crd 
+# Sehr lang ! 
+kubectl -n prometheus get crd/prometheuses.monitoring.coreos.com -o yaml
 
+```
 
+## Look into the pods to see the image used, how configuration is mounted 
 
+```
+kubectl -n prometheus get sts
+kubectl -n prometheus describe sts/prometheus-prometheus-kube-prometheus-prometheus > prom.yml  
+kubectl -n prometheus describe sts/alertmanager-prometheus-kube-prometheus-alertmanager > alert.yml  
+
+kubectl -n prometheus get deploy 
+kubectl -n prometheus describe deploy/prometheus-kube-prometheus-operator > operator.yml 
+
+# ---> das SECRET erstellt der Kubernetes Operator für uns !
+# First prom.yml 
+#. Mounts:
+#      /etc/prometheus/config from config (rw)
+#  -> What endpoints to scrape 
+# comes from:
+kubectl get -n prometheus secrets prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.data.prometheus\.yaml\.gz}' | base64 -d | gunzip > config-prom.yml
+# vi config-prom.yml 
+# Look into the scrape_configs 
+
+```
 
 
 ## Reference:
