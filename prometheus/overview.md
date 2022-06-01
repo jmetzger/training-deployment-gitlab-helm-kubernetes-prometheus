@@ -32,7 +32,7 @@ Quelle: https://www.devopsschool.com/
 ### Prometheus Server 
 
 1. Retrieval (Sammeln) 
-   * Data Retrieval Worke 
+   * Data Retrieval Worker 
      * pull metrics data
 1. Storage 
    * Time Series Database (TDB)
