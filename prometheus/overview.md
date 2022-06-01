@@ -29,11 +29,18 @@
 
 Quelle: https://www.devopsschool.com/
 
-### Server 
+### Prometheus Server 
 
-  * Sammelt (Pullen von Endpunkten) und speichert Daten. (TDB = Timeseries Database)
-  * Wird von Grafana angefragt, dort bezieht Grafana seine Daten über eine API 
-
+  1 Retrieval (Sammeln) 
+    * Data Retrieval Worke 
+      * pull metrics data
+  1 Storage 
+    * Time Series Database (TDB)
+      * stores metrics data
+  1 HTTP Server 
+    * Accepts PromQL - Queries (e.g. from Grafana)
+      * accept queries 
+  
 ## Grafana ? 
 
   * Grafana wird meist verwendet um die grafische Auswertung zu machen.
