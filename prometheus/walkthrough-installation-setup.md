@@ -150,6 +150,41 @@ webhooks:
     sideEffects: None
 ```
 
+## Step 4: Let's look into Deployments
+
+```
+kubectl -n prometheus get deploy 
+```
+
+  * What do they do 
+
+## Step 5: Let's look into DaemonSets 
+
+```
+kubectl -n prometheus get ds
+# node-exporter runs on every node
+# connects to server, collects data and exports it
+# so it is available for prometheus at the endpoint 
+```
+
+## Helm -> prometheus stack -> What does it do 
+
+  * Sets up Monitoring Stack
+  * Configuration for your K8s cluster 
+    * Worker Nodes monitored 
+    * K8s components (pods a.s.o) are monitored 
+
+## Where does configuration come from ? 
+
+```
+# roundabout 31 configmaps 
+kubectl -n prometheus get configmaps 
+
+# also you have secrets (Grafana, Prometheus, Operator)
+kubectl -n prometheus get secrets 
+
+```
+
 
 
 
