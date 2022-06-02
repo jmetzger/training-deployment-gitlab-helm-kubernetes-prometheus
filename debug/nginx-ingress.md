@@ -40,3 +40,8 @@ Can we access the needed data.
 
 
 ```
+
+
+## Reference 
+
+  * https://kubernetes.github.io/ingress-nginx/troubleshooting/
