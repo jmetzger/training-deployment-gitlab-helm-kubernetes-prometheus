@@ -26,32 +26,19 @@ Schritt 2: Was darfst du ?
 anhand von -> rolebinding/clusterrolebinding -> role/clusterrole  
 ```
 
-
-
-## Welche Berechtigungen ? 
+## Bereich 2: Wie darf einer Nutzer xy einen Pod starten / Vorgabe !!! 
 
 ```
-1. Ebene 
-Welche apiGroups  ? 
-z.B. apps/v1 oder alles * 
-[''] -> v1 
-```
+# Ebene 1: Ein User / Service Account :    hans / nginx-ingress 
 
-```
-2. Ebene 
-Welche Ressourcen -> welches Kind 
-deployment
-* <- für alle 
-```
+# Ebene 2: Ein rolebinding / clusterrolebinding 
+hans -> rolebinding rechte_verknuepfung_hans -> role 
 
-```
-3. Ebene -> verbs a.k.a (Operationen) 
-list (kubectl get pods) - Liste -- > items 
-get (kubectl get pod live-pod) -
-create
-delete
-watch 
-update
+# Ebene 3: Rolle (z.B. nicht_admin_rolle)
+# In der Rolle steht drin, welche PodSecurityPolicy für ihn gilt 
+
+# Ebene 4:
+# Definierte PodSecurityPolicy 
 ```
 
 
@@ -120,4 +107,30 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Ikx1SFlBUlRWNHJ1SlV2T1JxdTdkaElZd0lyOGJzTTVZUmpmM3E2
   "nbf": 1654254779,
   "sub": "system:serviceaccount:default:default"
 }
+```
+
+## Welche Berechtigungen ? 
+
+```
+1. Ebene 
+Welche apiGroups  ? 
+z.B. apps/v1 oder alles * 
+[''] -> v1 
+```
+
+```
+2. Ebene 
+Welche Ressourcen -> welches Kind 
+deployment
+* <- für alle 
+```
+
+```
+3. Ebene -> verbs a.k.a (Operationen) 
+list (kubectl get pods) - Liste -- > items 
+get (kubectl get pod live-pod) -
+create
+delete
+watch 
+update
 ```
