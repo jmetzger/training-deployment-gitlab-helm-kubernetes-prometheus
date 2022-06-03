@@ -73,3 +73,7 @@ helm install mongodb-exporter prometheus-community/prometheus-mongodb-exporter -
 ```
 
 ## Step 3: Helm -> template -> What does it do ? 
+
+```
+helm template mongodb-exporter prometheus-community/prometheus-mongodb-exporter -f values.yml
+```
