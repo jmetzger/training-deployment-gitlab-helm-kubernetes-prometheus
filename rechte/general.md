@@ -53,3 +53,14 @@ delete
 watch 
 update
 ```
+
+
+## Bereich 3: Welcher Dienst/Controller/Pod -> darf was machen / abfragen 
+
+```
+# Beispiel, was darf ein Pod -> z.B. nginx in Bezug auf Anfragen an den kube-api-server 
+# Wenn er bereits im laufenden Betrieb ist. 
+
+# Puzzle - Teil 1: Mit welchem Token / Account greift er zu 
+
+```
