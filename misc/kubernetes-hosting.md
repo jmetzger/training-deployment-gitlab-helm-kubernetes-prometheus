@@ -1,4 +1,4 @@
-# Kubernetes Hosting (Managed)  
+# Kubernetes Hosting (Managed) / minikube 
 
 ## Google Cloud 
 
@@ -39,3 +39,24 @@
    * ab Euro 169,90 / Monat (Stand: 05/2022) 
    * https://www.cloudshift.de/cloud-services/kubernetes/#pricing
 
+
+## minikube (als nicht hosting - alternative)
+
+```
+Als Alternative 
+```
+
+## rancherdesktop 
+
+```
+1 - node - cluster
+```
+
+## lab - umgebung 
+
+  * https://labs.play-with-k8s.com/#
+
+
+## killercoda 
+
+  * https://killercoda.com/playgrounds/scenario/kubernetes
