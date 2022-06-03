@@ -74,6 +74,13 @@ helm template prometheus prometheus-community/kube-prometheus-stack > all-promet
 # NOPE -> none 
 cat all-prometheus.yaml | grep -i kind: | grep -i stateful
 
+# secrets -> configuration von prometheus
+# wenn ein eigenschaft Punkte hat, z.B. prometheus.yaml.gz
+#
+# {"prometheus.yaml.gz":"H4s 
+# dann muss man escapen, um darauf zuzugreifen -> aus . wird \.
+kubectl get -n prometheus secrets prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.data.prometheus\.yaml\.gz}' | base64 -d | gzip -d - 
+
 
 ```
 
