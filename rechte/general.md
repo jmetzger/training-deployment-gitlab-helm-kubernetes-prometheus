@@ -1,6 +1,6 @@
 # Wo spielen Rechte RBAC eine Rolle und wie ? 
 
-## Bereich 1: Welche Objekte darf ich als Helm/kubectl - Nutzer für Objekte erstellen/bearbeiten/ändern 
+## Bereich 1: Welche Objekte darf ich als Helm/kubectl - Nutzer erstellen/bearbeiten/ändern 
 
 ```
 kubectl 
