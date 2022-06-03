@@ -76,6 +76,29 @@ Closing. Unfortunately, that is not possible. We only receive 403 errors and the
 @0x53A you can see exactly the error if you add the flag --v=10 in the ingress controller deployment
 
 ```
+
+## Vorgehen (Achtung: Bitte nur für Troubleshooting)
+
+```
+kubectl get deploy gitlab2-nginx-ingress-controller -o yaml > ingress-controller.yaml 
+vi ingress-controller.yaml 
+# bei den args neue zeile einfügen
+# sachen rausschmeisen sich auf die gespeicherte version etcd -> zB resourceid 
+- -v=10
+kubectl apply -f ingress-controller.yaml 
+kubectl describe po gitlab2-nginx-ingress-controller-848865fc88-6knhb
+kubectl logs gitlab2-nginx-ingress-controller-848865fc88-6knhb | less
+
+# now we can see in the logs, that there are problems connecting to kube-api-server
+# permissions 
+est.go:1123] Response Body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"services \"gitlab2-nginx-ingress-defaultbackend\" is forbidden: User \"system:serviceaccount:gitlab:gitlab2-nginx-ingress\" cannot get resource \"services\" in API group \"\" in the namespace \"gitlab\"","reason":"Forbidden","details":{"name":"gitlab2-nginx-ingress-defaultbackend","kind":"services"},"code":403}
+F0603 13:31:04.134976       7 main.go:83] 
+
+
+```
+
+
+
 ## Reference 
 
   * https://kubernetes.github.io/ingress-nginx/troubleshooting/
