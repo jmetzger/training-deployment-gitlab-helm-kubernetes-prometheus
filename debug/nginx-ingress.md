@@ -15,7 +15,7 @@ certmanager:
 ```
 
 ```
-helm template gitlab2 -n gitlab --create-namespace=gitlab -f values-rbac.yml gitlab/gitlab > manifests-rbac-gitlab.yml 
+helm template gitlab2 -n gitlab --create-namespace -f values-rbac.yml gitlab/gitlab > manifests-rbac-gitlab.yml 
 
 ```
 
