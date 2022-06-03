@@ -224,6 +224,25 @@ kubectl get -n prometheus secrets prometheus-prometheus-kube-prometheus-promethe
 
 ```
 
+## Connect to grafana 
+
+```
+# wie ist der port 3000 
+kubectl logs prometheus-grafana-776fb976f7-w9nrp grafana
+# hier nochmal port und auch, wie das secret heisst
+kubectl describe pods prometheus-grafana-776fb976f7-w9nrp | less
+
+# user / pass ? 
+kubectl get secrets prometheus-grafana -o jsonpath='{.data.admin-password}' | base64 -d
+kubectl get secrets prometheus-grafana -o jsonpath='{.data.admin-user}' | base64 -d
+
+# localhost:3000 erreichbarkeit starten -- im Vordergrund
+kubectl port-forward deploy/prometheus-grafana 3000
+
+# letzte Schritt: browser aufrufen: http://localhost:3000
+
+
+```
 
 ## Reference:
 
