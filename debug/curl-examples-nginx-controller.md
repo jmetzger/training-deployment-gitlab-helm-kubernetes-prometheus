@@ -95,7 +95,7 @@ ACTION=/apis/networking.k8s.io/v1/ingressclasses/gitlab-nginx
 curl --cacert $CA_CERT -H  "Authorization: Bearer $BEARER" $API_URL$ACTION
 ```
 
-#### STEP 5: Validate -> ingressclass -> watch 
+#### STEP 5: Validate -> ingressclasses -> watch 
 
 ```
 ACTION=/apis/networking.k8s.io/v1/watch/ingressclasses/gitlab-nginx
