@@ -32,6 +32,10 @@
      * [Übung mit secrets](#übung-mit-secrets)
      * [Übung mit sealed-secrets](#übung-mit-sealed-secrets)
 
+  1. Kubernetes Probes (Liveness and Readiness) 
+     * [Übung Liveness-Probe](#übung-liveness-probe)
+     * [Funktionsweise Readiness-Probe vs. Liveness-Probe](#funktionsweise-readiness-probe-vs-liveness-probe)
+  
   1. Kubernetes Wartung / Fehleranalyse
      * [Wartung mit drain / uncordon (Ops)](#wartung-mit-drain--uncordon-ops)
      * [Debugging Ingress](#debugging-ingress)
@@ -79,6 +83,8 @@
      * [Debugging KUBE_CONTEXT - Community Edition](#debugging-kube_context---community-edition)
 
   1. Prometheus 
+     * [Prometheus/Grafana Überblick](#prometheusgrafana-überblick)
+     * [Prometheus Installation / Walkthrough](#prometheus-installation--walkthrough)
   
   1. Tipps & Tricks 
      * [Default namespace von kubectl ändern](#default-namespace-von-kubectl-ändern)
@@ -90,11 +96,16 @@
   1. RootLess / Security 
      * [seccomp-profile-default docker](https://github.com/docker/docker-ce/blob/master/components/engine/profiles/seccomp/default.json)
      * [Pod Security Policy](#pod-security-policy)
+     * [Pod Security Policy - Übung](#pod-security-policy---übung)
      * [RunAsUser Exercise](#runasuser-exercise)
      * [Offizielles RootLess Docker Image für Nginx](https://github.com/nginxinc/docker-nginx-unprivileged)
 
+  1. Rechte 
+     * [RBAC / Rechte allgemein](#rbac--rechte-allgemein)
+
   1. Documentation
      * [helm dry-run vs. template](https://jhooq.com/helm-dry-run-install/)
+     * [Marktuebersicht Kubernetes Hosting](#marktuebersicht-kubernetes-hosting)
 
 
 <div class="page-break"></div>
@@ -886,6 +897,158 @@ ausschliesslich als root arbeite
   * Controller: https://github.com/bitnami-labs/sealed-secrets/releases/
 
 
+
+## Kubernetes Probes (Liveness and Readiness) 
+
+### Übung Liveness-Probe
+
+
+
+### Übung 1: Liveness (command) 
+
+```
+What does it do ? 
+ 
+* At the beginning pod is ready (first 30 seconds)
+* Check will be done after 5 seconds of pod being startet
+* Check will be done periodically every 5 minutes and will check
+  * for /tmp/healthy
+  * if not there will return: 0 
+  * if not there will return: 1 
+* After 30 seconds container will be killed
+* After 35 seconds container will be restarted
+```
+
+```
+## cd
+## mkdir -p manifests/probes
+## cd manifests/probes 
+## vi 01-pod-liveness-command.yml 
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/busybox
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 30; rm -f /tmp/healthy; sleep 600
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+```
+
+```
+## apply and test 
+kubectl apply -f 01-pod-liveness-command.yml 
+kubectl describe -l test=liveness pods 
+sleep 30
+kubectl describe -l test=liveness pods 
+sleep 5 
+kubectl describe -l test=liveness pods 
+```
+
+```
+## cleanup
+kubectl delete -f 01-pod-liveness-command.yml
+ 
+``` 
+
+### Übung 2: Liveness Probe (HTTP)
+
+```
+## Step 0: Understanding Prerequisite:
+This is how this image works:
+## after 10 seconds it returns code 500 
+http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+    duration := time.Now().Sub(started)
+    if duration.Seconds() > 10 {
+        w.WriteHeader(500)
+        w.Write([](fmt.Sprintf("error: %v", duration.Seconds())))
+    } else {
+        w.WriteHeader(200)
+        w.Write([]("ok"))
+    }
+})
+```
+
+```
+## Step 1: Pod  - manifest 
+## vi 02-pod-liveness-http.yml
+## status-code >=200 and < 400 o.k. 
+## else failure 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-http
+spec:
+  containers:
+  - name: liveness
+    image: k8s.gcr.io/liveness
+    args:
+    - /server
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+        httpHeaders:
+        - name: Custom-Header
+          value: Awesome
+      initialDelaySeconds: 3
+      periodSeconds: 3
+```
+
+```
+## Step 2: apply and test
+kubectl apply -f 02-pod-liveness-http.yml
+## after 10 seconds port should have been started 
+sleep 10 
+kubectl describe pod liveness-http
+
+```
+
+
+### Reference:
+ 
+   * https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+
+### Funktionsweise Readiness-Probe vs. Liveness-Probe
+
+
+### Why / Howto / Difference to LiveNess 
+
+  * Readiness checks, if container and if not
+    * SENDS NO TRAFFIC to the container   
+  * They are configured exactly the same, but use another keyword
+    * readinessProbe instead of livenessProbe 
+
+### Example 
+
+```
+readinessProbe:
+  exec:
+    command:
+    - cat
+    - /tmp/healthy
+  initialDelaySeconds: 5
+  periodSeconds: 5
+```
+
+### Reference 
+
+  * https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/#define-readiness-probes
 
 ## Kubernetes Wartung / Fehleranalyse
 
@@ -3057,6 +3220,307 @@ KUBE_CONFIG dummyhoney/spring-autodevops-tln1:gitlab-devops-tn1
 
 ## Prometheus 
 
+### Prometheus/Grafana Überblick
+
+
+### What does it do ?
+
+  * It monitors your system by collecting data
+  * Data is pulled from your system by defined endpoints (http) from your cluster 
+  * To provide data on your system, a lot of exporters are available, that
+    * collect the data and provide it in Prometheus
+
+### Technical 
+
+  * Prometheus has a TDB (Time Series Database) and is good as storing time series with data
+  * Prometheus includes a local on-disk time series database, but also optionally integrates with remote storage systems.
+  * Prometheus's local time series database stores data in a custom, highly efficient format on local storage.
+  * Ref: https://prometheus.io/docs/prometheus/latest/storage/
+
+### What are time series ? 
+
+  * A time series is a sequence of data points that occur in successive order over some period of time. 
+  * Beispiel: 
+    * Du willst die täglichen Schlusspreise für eine Aktie für ein Jahr dokumentieren
+    * Damit willst Du weitere Analysen machen 
+    * Du würdest das Paar Datum/Preis dann in der Datumsreihenfolge sortieren und so ausgeben
+    * Dies wäre eine "time series" 
+
+### Kompenenten von Prometheus 
+
+![Prometheus Schaubild](https://www.devopsschool.com/blog/wp-content/uploads/2021/01/What-is-Prometheus-Architecutre-components1-740x414.png)
+
+Quelle: https://www.devopsschool.com/
+
+#### Prometheus Server 
+
+1. Retrieval (Sammeln) 
+   * Data Retrieval Worker 
+     * pull metrics data
+1. Storage 
+   * Time Series Database (TDB)
+     * stores metrics data
+1. HTTP Server 
+   * Accepts PromQL - Queries (e.g. from Grafana)
+     * accept queries 
+  
+### Grafana ? 
+
+  * Grafana wird meist verwendet um die grafische Auswertung zu machen.
+  * Mit Grafana kann ich einfach Dashboards verwenden 
+  * Ich kann sehr leicht festlegen (Durch Data Sources), so meine Daten herkommen
+
+### Prometheus Installation / Walkthrough
+
+
+### Prerequisites
+
+  * Ubuntu 20.04 with running microk8s single cluster 
+  * Works on any other cluster, but installing helm is different 
+
+### Prepare 
+
+```
+## Be sure helm is installed on your client 
+## In our walkthrough, we will do it directly on 1 node, 
+## which is not recommended for Production 
+
+```
+
+### Walkthrough 
+
+#### Step 1: install helm, if not there yet
+
+```
+snap install --classic helm 
+```
+
+#### Step 2: Rollout prometheus/grafana stack in namespace prometheus 
+
+```
+## add prometheus repo 
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+## install stack into new prometheus namespace 
+helm install -n prometheus --create-namespace prometheus prometheus-community/kube-prometheus-stack
+
+## After installation look at the pods 
+## You should see 3 pods 
+kubectl --namespace prometheus get pods -l "release=prometheus"
+
+## After a while it should be more pods
+kubectl get all -n prometheus
+
+```
+
+#### Step 3a Let's explain (der Prometheus - Server)  
+
+```
+## 2 Stateful sets
+kubectl get statefulsets  -n prometheus
+## output 
+## alertmanager-prometheus-kube-prometheus-alertmanager   1/1     5m14s
+## prometheus-prometheus-kube-prometheus-prometheus.      1/1.    5m23s
+```
+```
+## Moving part 1: 
+## prometheus-prometheus-kube-prometheus-prometheus
+## That is the core prometheus server based on the main image 
+
+## Let's validate 
+## schauen wir mal in das File 
+kubectl get statefulset -n prometheus -o yaml > sts-prometheus-server.yml
+
+## Und vereinfacht (jetzt sehen wir direkt die beiden verwendeten images)
+## 1) prometheus - server
+## 2) der dazugehörige config-reloader als Side-Car 
+kubectl get sts -n prometheus prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.spec.template.spec.containers[*].image}'
+
+## Aber wer managed den server -> managed-by -> kubernetes-operator 
+kubectl get sts -n prometheus prometheus-prometheus-kube-prometheus-prometheus -o jsonpath="{.spec.template.metadata.labels}" | jq .
+
+## Wir der sts von helm erstellt ? 
+## NEIN ;o) 
+## show us all the template that helm generate to apply them to kube-api-server 
+helm template prometheus prometheus-community/kube-prometheus-stack > all-prometheus.yml 
+## NOPE -> none 
+cat all-prometheus.yaml | grep -i kind: | grep -i stateful
+
+## secrets -> configuration von prometheus
+## wenn ein eigenschaft Punkte hat, z.B. prometheus.yaml.gz
+##
+## {"prometheus.yaml.gz":"H4s 
+## dann muss man escapen, um darauf zuzugreifen -> aus . wird \.
+kubectl get -n prometheus secrets prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.data.prometheus\.yaml\.gz}' | base64 -d | gzip -d - 
+
+
+```
+
+### Step 3b: Prometheus Operator und Admission Controller -> Hook 
+
+```
+## The Prometheus Operator for Kubernetes 
+## provides easy monitoring definitions 
+## for Kubernetes services and deployment and management of Prometheus instances.
+
+## But how are they created 
+## After installation new resource-type are introduced 
+cat all-prometheus.yaml | grep ^kind: | grep -e 'Prometheus' -e 'ServiceM' | uniq
+kind: Prometheus
+kind: PrometheusRule
+kind: ServiceMonitor
+```
+
+#### Step 3c: How are the StatefulSets created
+
+```
+## New custom resource definitions are created 
+## The Prometheus custom resource definition (CRD) declaratively defines a desired Prometheus setup to run in a Kubernetes cluster. It provides options to # configure replication, persistent storage, and Alertmanagers to which the deployed Prometheus instances send alerts to.
+
+## For each Prometheus resource, the Operator deploys a properly configured StatefulSet in the same namespace. The Prometheus Pods are configured to mount # ca Secret called <prometheus-name> containing the configuration for Prometheus.
+## https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/crds/crd-prometheuses.yaml
+
+```
+
+#### Step 3d: How are PrometheusRules created 
+
+```
+## PrometheusRule are manipulated by the MutationHook when they enter the AdmissionController
+## The AdmissionController is used after proper authentication in the kube-api-server
+
+cat all-prometheus.yml | grep 'Mutating' -B1 -A32
+```
+
+```
+## Output 
+## Ref: https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name:  prometheus-kube-prometheus-admission
+  labels:
+    app: kube-prometheus-stack-admission    
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: prometheus
+    app.kubernetes.io/version: "35.4.2"
+    app.kubernetes.io/part-of: kube-prometheus-stack
+    chart: kube-prometheus-stack-35.4.2
+    release: "prometheus"
+    heritage: "Helm"
+webhooks:
+  - name: prometheusrulemutate.monitoring.coreos.com
+    failurePolicy: Ignore
+    rules:
+      - apiGroups:
+          - monitoring.coreos.com
+        apiVersions:
+          - "*"
+        resources:
+          - prometheusrules
+        operations:
+          - CREATE
+          - UPDATE
+    clientConfig:
+      service:
+        namespace: prometheus
+        name: prometheus-kube-prometheus-operator
+        path: /admission-prometheusrules/mutate
+    admissionReviewVersions: ["v1", "v1beta1"]
+    sideEffects: None
+```
+
+#### Step 4: Let's look into Deployments
+
+```
+kubectl -n prometheus get deploy 
+```
+
+  * What do they do 
+
+#### Step 5: Let's look into DaemonSets 
+
+```
+kubectl -n prometheus get ds
+## node-exporter runs on every node
+## connects to server, collects data and exports it
+## so it is available for prometheus at the endpoint 
+```
+
+#### Helm -> prometheus stack -> What does it do 
+
+  * Sets up Monitoring Stack
+  * Configuration for your K8s cluster 
+    * Worker Nodes monitored 
+    * K8s components (pods a.s.o) are monitored 
+
+#### Where does configuration come from ? 
+
+```
+## roundabout 31 configmaps 
+kubectl -n prometheus get configmaps 
+
+## also you have secrets (Grafana, Prometheus, Operator)
+kubectl -n prometheus get secrets 
+
+```
+
+#### CRD's were created 
+
+```
+## custom resource definitions 
+kubectl -n prometheus crd 
+## Sehr lang ! 
+kubectl -n prometheus get crd/prometheuses.monitoring.coreos.com -o yaml
+
+```
+
+### Look into the pods to see the image used, how configuration is mounted 
+
+```
+kubectl -n prometheus get sts
+kubectl -n prometheus describe sts/prometheus-prometheus-kube-prometheus-prometheus > prom.yml  
+kubectl -n prometheus describe sts/alertmanager-prometheus-kube-prometheus-alertmanager > alert.yml  
+
+kubectl -n prometheus get deploy 
+kubectl -n prometheus describe deploy/prometheus-kube-prometheus-operator > operator.yml 
+
+## ---> das SECRET erstellt der Kubernetes Operator für uns !
+## First prom.yml 
+##. Mounts:
+##      /etc/prometheus/config from config (rw)
+##  -> What endpoints to scrape 
+## comes from:
+kubectl get -n prometheus secrets prometheus-prometheus-kube-prometheus-prometheus -o jsonpath='{.data.prometheus\.yaml\.gz}' | base64 -d | gunzip > config-prom.yml
+## vi config-prom.yml 
+## Look into the scrape_configs 
+
+```
+
+### Connect to grafana 
+
+```
+## wie ist der port 3000 
+kubectl logs prometheus-grafana-776fb976f7-w9nrp grafana
+## hier nochmal port und auch, wie das secret heisst
+kubectl describe pods prometheus-grafana-776fb976f7-w9nrp | less
+
+## user / pass ? 
+kubectl get secrets prometheus-grafana -o jsonpath='{.data.admin-password}' | base64 -d
+kubectl get secrets prometheus-grafana -o jsonpath='{.data.admin-user}' | base64 -d
+
+## localhost:3000 erreichbarkeit starten -- im Vordergrund
+kubectl port-forward deploy/prometheus-grafana 3000
+
+## letzte Schritt: browser aufrufen: http://localhost:3000
+
+
+```
+
+### Reference:
+
+  * Techworld with Nana: [https://www.youtube.com/watch?v=QoDqxm7ybLc](https://youtu.be/QoDqxm7ybLc?t=190)
+
 ## Tipps & Tricks 
 
 ### Default namespace von kubectl ändern
@@ -3289,6 +3753,410 @@ spec:
   * https://k8s-examples.container-solutions.com/examples/PodSecurityPolicy/PodSecurityPolicy.html
   * https://github.com/intelygenz/lab-microk8s-pod-security-policies/blob/master/6.Enable-Pod-Security-Policy.md#test-it
 
+### Pod Security Policy - Übung
+
+
+### Vorbereitung 
+
+```
+Die Umgebung muss aufgesetzt, dass PodSecurityPolicy als Admission Controller läuft.
+(dazu unter microk8s -> /var/snap/microk8s/currents/args/kubeapi-server die Zeile:
+--admission-controller=PodSecurityPolicy hinzugefügt.
+
+In der folgenden Umgebung, ist dies bereis durchgeführt 
+## Es gibt die Möglichkeit dieses Script zu verwenden um in DigitalOcean eine Umgebung aufzusetzen.
+## Dies kann aber letztendlich auf jedem beliebigen Ubuntu 20.04. LTS Systems erfolgen
+```
+
+```
+##!/bin/bash  
+
+groupadd sshadmin
+USERS="11trainingdo"
+for USER in $USERS
+do
+  echo "Adding user $USER"
+  useradd -s /bin/bash $USER
+  usermod -aG sshadmin $USER
+  echo "$USER:mein-super-geheimes-passwort" | chpasswd
+done
+
+## We can sudo with 11trainingdo
+usermod -aG sudo 11trainingdo 
+
+## Setup ssh stuff 
+sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/g" /etc/ssh/sshd_config
+usermod -aG sshadmin root
+echo "AllowGroups sshadmin" >> /etc/ssh/sshd_config 
+systemctl reload sshd 
+
+## Now let us do some generic setup 
+echo "Installing microk8s"
+
+## This only works with 1.23 out of the box 
+## in 1.24 no secrets for service - accounts are created by default 
+snap install --classic --channel=1.23/stable microk8s
+
+microk8s enable dns rbac   
+echo "alias kubectl='microk8s kubectl'" >> /root/.bashrc 
+source ~/.bashrc 
+alias kubectl='microk8s kubectl'
+
+## Installing nfs-common 
+apt-get -y update 
+apt-get -y install nfs-common jq
+
+git clone https://github.com/jmetzger/lab-microk8s-pod-security-policies lab 
+
+## set the correct rolebinding for the service-account 
+cd /lab 
+
+## Create namespace for testing 
+microk8s kubectl create namespace sample-psp
+microk8s kubectl apply -f rbac/cluster-role-binding-default-sa-at-kube-system-as-cluster-admin.yml 
+## Create a developer role in that namespace 
+microk8s kubectl apply -f  rbac/default-sa-at-example-psp-namespace.yaml
+## helper - sample psp 
+helper/create_sa_kubeconfig.sh default sample-psp
+
+## now we need to modify the setting of kube-api-server 
+## currently in 1.23 no other admission-plugins are activated  
+echo "--enable-admission-plugins=PodSecurityPolicy" >> /var/snap/microk8s/current/args/kube-apiserver 
+microk8s stop  
+microk8s start 
+```
+
+### Übung 1 (nginx erstellen, läuft dieser ?) 
+
+```
+## mit dem Server per ssh verbinden 
+## zu Testzwecken verzichten wir hier auf einen extra Client 
+## sudo -i 
+cd 
+mkdir manifests 
+## vi 01-nginx.yml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.15.4
+
+```
+
+```
+kubectl apply -f 01-nginx.yml
+## sind pods gestartet 
+kubectl get deploy,rs,pods
+## rs - sollte nur einen geben  
+kubectl describe rs 
+## Pod wurde nicht gestartet:
+## Error creating: pods "nginx-deployment-8647b96f59-" is forbidden: PodSecurityPolicy: no providers available to validate pod request
+## PodSecurityPolicy ist aktiv, yeah. !! aber es gibt für den user der hier arbeitet keine podsecurity policy die greift 
+
+## Welcher user arbeitet hier - standardmäßig default
+kubectl config current-context 
+
+## context: microk8s, user: admin, authentifizierung läuft über token 
+kubectl config view
+
+## Alles auf Anfang 
+kubectl delete -f 01-pod.yml 
+```
+
+### Übung 2a: Set psp (restrictive), clusterrole, clusterrolebinding and try to deploy nginx 
+
+```
+## Schritt 1:
+## psp erstellen 
+## mkdir psp-restrictive 
+## cd psp-restrictive 
+## vi 01-psp.yml 
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restrictive
+spec:
+  privileged: false
+  hostNetwork: false
+  allowPrivilegeEscalation: false
+  defaultAllowPrivilegeEscalation: false
+  hostPID: false
+  hostIPC: false
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  volumes:
+  - 'configMap'
+  - 'downwardAPI'
+  - 'emptyDir'
+  - 'persistentVolumeClaim'
+  - 'secret'
+  - 'projected'
+  allowedCapabilities:
+  - '*'
+  
+```
+
+```
+kubectl apply -f 01-psp.yml
+```
+
+```
+## psp does not work without
+## 1. a role/clusterrole 
+## 2. a rolebind / clusterrolebinding
+## Let's start with 1. 
+## vi 02-clusterrole.yml 
+## Decides which policy to use
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: psp-restrictive
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - restrictive
+  verbs:
+  - use
+```
+
+```
+kubectl apply -f 02-clusterrole.yml 
+```
+
+```
+
+```
+
+```
+kubectl apply -f 03-clusterrolebinding.yml 
+```
+
+```
+
+```
+
+```
+kubectl apply -f 04-nginx-deploy.yml 
+## IT works 
+kubectl get deploy,rs,pods
+```
+
+### Step 2b: Deploy nginx and WANTING access to host network 
+
+  * Need Step 2a to be done firstly 
+
+```
+## vi 05-nginx-host.yml 
+## With access to host 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-host
+  labels:
+    app: nginx-host
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-host
+  template:
+    metadata:
+      labels:
+        app: nginx-host
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.15.4
+      hostNetwork: true
+
+
+```
+
+```
+## to easier see nginx-deployment-host
+kubectl delete -f 04-nginx.host.yml 
+kubectl apply -f 05-nginx-host.yml 
+## Does not work, why ? 
+kubectl get deployment,rs.pods 
+```
+
+```
+## HostNetwork is in the way 
+kubectl describe rs 
+## See also - Got the point 
+kubectl get psp restrictive -o yaml 
+kubectl describe psp restrictive 
+kubectl describe psp restrictive | grep "Host Network" 
+```
+```
+## Cleanup 
+cd
+cd manifests/psp-restrictive 
+kubectl delete -f . 
+
+```
+
+
+
+### Übung 3: psp (restrictive), clusterrole, rolebinding 
+
+```
+## Schritt 1: Create permissive psp 
+cd 
+cd manifests
+mkdir psp-permissive 
+cd psp-permissive 
+```
+
+```
+## vi 01-psp.yml 
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: permissive
+spec:
+  privileged: true
+  hostNetwork: true
+  hostIPC: true
+  hostPID: true
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  hostPorts:
+  - min: 0
+    max: 65535
+  volumes:
+  - '*'
+```
+  
+```
+## apply that
+kubectl apply -f 01-psp.yml 
+kubectl get psp 
+```
+
+```
+## Schritt 2: Create a clusterrole 
+## create a clusterrole 
+## vi 02-clusterrole.yml 
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: psp-permissive
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - permissive
+  verbs:
+  - use
+```
+
+```
+kubectl apply -f 02-clusterrole.yml 
+kubectl get clusterrole 
+```
+
+```
+## Schritt 3: clusterrolebinding anlegen 
+## create clusterrolebinding but only for use default in kube-system 
+## vi 03-clusterrolebinding-kube-system.yml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: default-sa-at-kube-system-as-cluster-admin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: kube-system
+```
+
+```
+kubectl apply -f 03-clusterrolebinding-kube-system.yml
+```
+
+```
+## Schritt 4: Testing Host Network - Anforderung 
+## same as in last exercise
+## vi 05-nginx-host.yml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-host
+  labels:
+    app: nginx-host
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-host
+  template:
+    metadata:
+      labels:
+        app: nginx-host
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.15.4
+      hostNetwork: true
+```
+
+```
+## Apply but not to kube-system namespace
+kubectl -n kube-system apply -f 05-nginx-host.yml 
+## This work, and we want to figure out, if hostname isset. 
+kubectl -n kube-system get pods | grep nginx 
+
+## See if  hostNetwork isset
+kubectl -n kube-system -l app=nginx-host get pods -o yaml | grep -i hostNetwork
+
+## Try to look inside 
+kubectl -n kube-system exec -it deploy/nginx-deployment-host -- bash
+## apt update
+## apt install -y iproute2 procps
+## ip a 
+## ps aux 
+## exit 
+
+kubectl -n kube-system delete -f 05-nginx-host.yml 
+kubectl delete -f . 
+
+```
+
 ### RunAsUser Exercise
 
 
@@ -3429,8 +4297,227 @@ spec:
 
   * https://github.com/nginxinc/docker-nginx-unprivileged
 
+## Rechte 
+
+### RBAC / Rechte allgemein
+
+
+### Bereich 1: Welche Objekte darf ich als Helm/kubectl - Nutzer erstellen/bearbeiten/ändern 
+
+```
+kubectl 
+-> user: 
+   -> token: identifizert.
+
+users:
+- name: admin
+  user:
+    token: Q2tJbEsxaUI0eFVDT3haYXJIVGxyYWhsWURHRFlnZ25QWVpNd3lVdi9BST0K
+
+--> über ein Token ->
+Hier kann auch ein anderer Context hinzugefügt, der dann als Nutzer verwenden kann 
+z.B. context restricteduser
+kubectl config use-context restricteduser  
+
+```
+
+```
+Benutzer (User/ServiceAccount) <----->. Rolebinding/Clusterrolebinding   <------> Role/Clusterrole            
+```
+
+```
+## Standard: default -> bei serviceAccount der automatisch eingebunden wird,
+alternativ 
+
+kubectl explain deployment.spec.template.spec.serviceAccountName
+## <- dann wird dieser ServiceAccountName verwendet.
+
+```
+
+
+
+```
+Schritt 1: Authentifizierung -> Du darfst generell erstmal zugreifen...
+
+Schritt 2: Was darfst du ? 
+anhand von -> rolebinding/clusterrolebinding -> role/clusterrole  
+```
+
+### Bereich 2: Wie darf einer Nutzer xy einen Pod starten / Vorgabe !!! 
+
+```
+## Ebene 1: Ein User / Service Account :    hans / nginx-ingress 
+
+## Ebene 2: Ein rolebinding / clusterrolebinding 
+hans -> rolebinding rechte_verknuepfung_hans -> role 
+
+## Ebene 3: Rolle (z.B. nicht_admin_rolle)
+## In der Rolle steht drin, welche PodSecurityPolicy für ihn gilt 
+
+## Ebene 4:
+## Definierte PodSecurityPolicy 
+```
+
+
+### Bereich 3: Welcher Dienst/Controller/Pod -> darf was machen / abfragen 
+
+```
+## Beispiel, was darf ein Pod -> z.B. nginx in Bezug auf Anfragen an den kube-api-server 
+## Wenn er bereits im laufenden Betrieb ist. 
+
+## Puzzle - Teil 1: Mit welchem Token / Account greift er zu 
+kubectl run nginx --image=nginx 
+
+## Er hängt automatisch den ServiceAccount und das ca-cert und auch den namespace 
+kubectl describe po nginx 
+kubectl get po nginx -o yaml 
+
+kubectl exec -it nginx -- bash 
+## cd /var/run/secrets/kubernetes.io/serviceaccount
+## ls -la
+## cat namespace 
+## cat token 
+
+## So können wir auf den kube-api-server low level zugreifen 
+## Es ist ein jwt-token, mit Zusatzinformationen wie ServiceAccount
+## Läßt sich mit jwt oder auf jwt.io auslesen 
+TOKEN=$(cat token)
+## Esi ist immer diese Domain zum Kube-Api-Server 
+API_URL=https://kubernetes.default.svc.cluster.local
+
+## Api -> v1 abfragen
+## curl --cacert ca.crt -H "Authorization: Bearer $TOKEN" $API_URL/api 
+## Alle anderen apis abfragen (welche gibt es) -> z.B. apps/v1 
+curl --cacert ca.crt -H "Authorization: Bearer $TOKEN" $API_URL/apis
+
+## Ist mein Token falsch, bekomme ich forbidden 403 
+curl --cacert ca.crt -H "Authorization: Bearer $TOKENx" $API_URL/apis 
+
+## Ist mein Token korrekt, aber Pfad falsch auch -> 403 -> apis3 gibt es nicth auf dem Server
+curl --cacert ca.crt -H "Authorization: Bearer $TOKEN" $API_URL/apis3 
+```
+
+```
+Ergebnis des Tokens in jwt.io
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ikx1SFlBUlRWNHJ1SlV2T1JxdTdkaElZd0lyOGJzTTVZUmpmM3E2VUJiNm8ifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjIl0sImV4cCI6MTY4NTc5MDc3OSwiaWF0IjoxNjU0MjU0Nzc5LCJpc3MiOiJodHRwczovL2t1YmVybmV0ZXMuZGVmYXVsdC5zdmMiLCJrdWJlcm5ldGVzLmlvIjp7Im5hbWVzcGFjZSI6ImRlZmF1bHQiLCJwb2QiOnsibmFtZSI6Im5naW54IiwidWlkIjoiYzFjZDlhOTItZWQ4Yi00YTc1LTkxYWMtODk3ZWU4NGY1ZTdiIn0sInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJkZWZhdWx0IiwidWlkIjoiZmY2NDJhNjMtNDBiOC00ZDNkLTlkMmEtYzA2MjA2ODdkN2Q0In0sIndhcm5hZnRlciI6MTY1NDI1ODM4Nn0sIm5iZiI6MTY1NDI1NDc3OSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmRlZmF1bHQ6ZGVmYXVsdCJ9.xR1qQGOzNu8NLZ8XwsG5ZgIHk-y0Z_pEBWqtKhBGDEFZwbdIlWRbfBN0xHrKqmgib9QvBqosqIM4G2Ozm9Dv-4bEZyjqybq8ylKCmRWVA62LjooS5k7gl1E3ws7qY5G2Jb28MPo-x7Gvgx4MBGCACWsPgfaKLF0kwcbGxHC6VWG7Bgj21di-_aHeuuBslhkGHeSLHyuWOXwOPi7ne59b1rAUKblzmEwNbWqRtGKBjqzelkbAq80GD7-khK3LxbOaB9XVN6LzvvXeqjOXGSVUr3gkE4SNM-R1zYO1raXdD6xJ9cHBbRg_kj3PwpD_dxWDYlG-VU_5Zl6v8SAIlILvrg 
+
+## payload data
+{
+  "aud": [
+    "https://kubernetes.default.svc"
+  ],
+  "exp": 1685790779,
+  "iat": 1654254779,
+  "iss": "https://kubernetes.default.svc",
+  "kubernetes.io": {
+    "namespace": "default",
+    "pod": {
+      "name": "nginx",
+      "uid": "c1cd9a92-ed8b-4a75-91ac-897ee84f5e7b"
+    },
+    "serviceaccount": {
+      "name": "default",
+      "uid": "ff642a63-40b8-4d3d-9d2a-c0620687d7d4"
+    },
+    "warnafter": 1654258386
+  },
+  "nbf": 1654254779,
+  "sub": "system:serviceaccount:default:default"
+}
+```
+
+### Welche Berechtigungen ? 
+
+```
+1. Ebene 
+Welche apiGroups  ? 
+z.B. apps/v1 oder alles * 
+[''] -> v1 
+```
+
+```
+2. Ebene 
+Welche Ressourcen -> welches Kind 
+deployment
+* <- für alle 
+```
+
+```
+3. Ebene -> verbs a.k.a (Operationen) 
+list (kubectl get pods) - Liste -- > items 
+get (kubectl get pod live-pod) -
+create
+delete
+watch 
+update
+```
+
 ## Documentation
 
 ### helm dry-run vs. template
 
   * https://jhooq.com/helm-dry-run-install/
+
+### Marktuebersicht Kubernetes Hosting
+
+
+### Google Cloud 
+
+  * Aktuell (2022/06) -> USD 300 
+  * https://www.udemy.com/course/certified-kubernetes-security-specialist/learn/lecture/22792893?start=30#learning-tools
+
+### AWS 
+
+
+### AZURE 
+
+
+### Digital Ocean 
+
+  * Kubernetes Cluster (Managed) ab $10 / Monat möglich 
+  * https://www.digitalocean.com/products/kubernetes
+  * Empfehlenswert ab USD 20, aber nur 1 Node, d.h. realistisch mit 3 Nodes, USD 60 
+  * Einfach aufzusetzen, vanilla Kubernetes 
+  * Empfehlenswert 
+  * Rechenzentrum Deutschland möglich.
+  * Andere Maschinen (Droplet = virtuelle Maschinen) sind zubuchbar.
+
+### IONOS 
+
+  * https://cloud.ionos.de/preise
+  * Preisstruktur schwer durchschaubar, weil es sich aus verschiedenen Komponenten zusammensetzt 
+    (CPU .. etc) 
+
+### OVHCloud 
+
+  * monatliche Preise anzeigbar, ab Euro 26,- pro Instanz (Stand 05/2022)
+  * https://www.ovhcloud.com/de/public-cloud/prices/
+  * https://www.ovhcloud.com/de/public-cloud/kubernetes/#:~:text=Der%20Managed%20Kubernetes%20Service%20wird%20kostenfrei%20bereitgestellt.
+  * Unklar, ob das gemanaged ist, oder meine ein Cluster aufsetzt, deren zugrundeliegende Maschinen man selber warten muss 
+
+### Cloudshift 
+
+   * ab Euro 169,90 / Monat (Stand: 05/2022) 
+   * https://www.cloudshift.de/cloud-services/kubernetes/#pricing
+
+
+### minikube (als nicht hosting - alternative)
+
+```
+Als Alternative 
+```
+
+### rancherdesktop 
+
+```
+1 - node - cluster
+```
+
+### lab - umgebung 
+
+  * https://labs.play-with-k8s.com/#
+
+
+### killercoda 
+
+  * https://killercoda.com/playgrounds/scenario/kubernetes
