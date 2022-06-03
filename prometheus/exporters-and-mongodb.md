@@ -8,6 +8,7 @@
 ## Step 1: mongodb - deployment in mongodb namespace
 
 ```
+# vi mongo-db-deploy.yml 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -41,12 +42,11 @@ spec:
     - protocol: TCP
       port: 27017
       targetPort: 27017        
-
-
-
-
 ```
 
+```
+kubectl apply -f mongo-db-deploy.yml
+```
 
 
 ## Step 2: Install prometheus - mongodb - export 
