@@ -1,5 +1,24 @@
 # Debugging nginx-ingress
 
+## Step 1: gitlab ausrollen ohne cert-manager 
+
+```
+# mkdir manifests/gitlab 
+# cd manifests/gitlab
+# vi values-rbac.yml 
+global:
+  ingress:
+    configureCertmanager: false
+    
+certmanager:                                                                                         
+  install: false 
+```
+
+```
+helm template gitlab2 -n gitlab --create-namespace=gitlab -f values-rbac.yml gitlab/gitlab > manifests-rbac-gitlab.yml 
+
+```
+
 ## Debugging connection to kube-api-server
 
 ```
