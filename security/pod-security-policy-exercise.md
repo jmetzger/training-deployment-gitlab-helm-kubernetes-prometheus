@@ -191,21 +191,7 @@ kubectl apply -f 02-clusterrole.yml
 ```
 
 ```
-# Now we need to define, how uses this clusterrole 
-# In our case all users, that belong to the Group system::users 
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: psp-restrictive
-rules:
-- apiGroups:
-  - extensions
-  resources:
-  - podsecuritypolicies
-  resourceNames:
-  - restrictive
-  verbs:
-  - use
+
 ```
 
 ```
@@ -213,21 +199,7 @@ kubectl apply -f 03-clusterrolebinding.yml
 ```
 
 ```
-# Now deploy an nginx server 
-# vi 04-nginx-deploy.yml 
-kind: ClusterRole
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: psp-restrictive
-rules:
-- apiGroups:
-  - extensions
-  resources:
-  - podsecuritypolicies
-  resourceNames:
-  - restrictive
-  verbs:
-  - use
+
 ```
 
 ```
