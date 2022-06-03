@@ -66,7 +66,16 @@ Can we access the needed data.
 
 ```
 
+## Bug  / Troubleshooting 
 
+  * https://github.com/kubernetes/ingress-nginx/issues/4610
+
+```
+Closing. Unfortunately, that is not possible. We only receive 403 errors and there is no way to check what RBAC permissions are missing.
+
+@0x53A you can see exactly the error if you add the flag --v=10 in the ingress controller deployment
+
+```
 ## Reference 
 
   * https://kubernetes.github.io/ingress-nginx/troubleshooting/
