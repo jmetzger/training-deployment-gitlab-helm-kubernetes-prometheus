@@ -2,6 +2,8 @@
 
 ## Google Cloud 
 
+  * Aktuell (2022/06) -> USD 300 
+  * https://www.udemy.com/course/certified-kubernetes-security-specialist/learn/lecture/22792893?start=30#learning-tools
 
 ## AWS 
 
