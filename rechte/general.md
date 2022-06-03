@@ -13,11 +13,26 @@ users:
     token: Q2tJbEsxaUI0eFVDT3haYXJIVGxyYWhsWURHRFlnZ25QWVpNd3lVdi9BST0K
 
 --> über ein Token ->
+Hier kann auch ein anderer Context hinzugefügt, der dann als Nutzer verwenden kann 
+z.B. context restricteduser
+kubectl config use-context restricteduser  
+
 ```
 
 ```
 Benutzer (User/ServiceAccount) <----->. Rolebinding/Clusterrolebinding   <------> Role/Clusterrole            
 ```
+
+```
+# Standard: default -> bei serviceAccount der automatisch eingebunden wird,
+alternativ 
+
+kubectl explain deployment.spec.template.spec.serviceAccountName
+# <- dann wird dieser ServiceAccountName verwendet.
+
+```
+
+
 
 ```
 Schritt 1: Authentifizierung -> Du darfst generell erstmal zugreifen...
