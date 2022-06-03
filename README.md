@@ -84,6 +84,7 @@
 
   1. Prometheus 
      * [Prometheus/Grafana Überblick](/prometheus/overview.md)
+     * [Prometheus Installation / Walkthrough](/prometheus/walkthrough-installation-setup.md)
   
   1. Tipps & Tricks 
      * [Default namespace von kubectl ändern](/kubectl/change-default-namespace.md)
