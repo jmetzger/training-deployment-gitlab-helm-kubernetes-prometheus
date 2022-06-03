@@ -100,6 +100,9 @@
      * [RunAsUser Exercise](/security/uebung-runasuser.md)
      * [Offizielles RootLess Docker Image für Nginx](https://github.com/nginxinc/docker-nginx-unprivileged) 
 
+  1. Rechte 
+     * [RBAC / Rechte allgemein](/rechte/general.md)
+
   1. Documentation
      * [helm dry-run vs. template](https://jhooq.com/helm-dry-run-install/)
      * [Marktuebersicht Kubernetes Hosting](/misc/kubernetes-hosting.md)
