@@ -71,3 +71,5 @@ serviceMonitor:
 ```
 helm install mongodb-exporter prometheus-community/prometheus-mongodb-exporter -f values.yml
 ```
+
+## Step 3: Helm -> template -> What does it do ? 
