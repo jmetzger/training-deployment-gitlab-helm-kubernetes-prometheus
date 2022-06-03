@@ -19,6 +19,12 @@ helm template gitlab2 -n gitlab --create-namespace -f values-rbac.yml gitlab/git
 
 ```
 
+```
+
+
+
+```
+
 ## Debugging connection to kube-api-server
 
 ```
